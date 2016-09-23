@@ -11,6 +11,7 @@
  * Currently this module contains <em>altsyncram</em> instantiations
  * from Altera Megafunction/LPM library.
  */
+/* verilator lint_off PINMISSING */
 module memory_registers(
     input clock,
     input reset_n,

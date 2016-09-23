@@ -1,7 +1,8 @@
 /***********************************************************************************************************************
  * Bus control
  **********************************************************************************************************************/
-
+/* verilator lint_off WIDTH */
+/* verilator lint_off CASEINCOMPLETE */
 /*! \brief Initiate WISHBONE MASTER bus cycles.
  *
  * The bus_control module is the only module that has contact with signals from outside of the IP core.

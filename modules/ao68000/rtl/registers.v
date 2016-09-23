@@ -2,6 +2,7 @@
  * Registers
  **********************************************************************************************************************/
 
+/* verilator lint_off WIDTH */
 /*! \brief Microcode controlled registers.
  *
  * Most of the ao68000 IP core registers are located in this module. At every clock cycle the microcode controls what

@@ -1,0 +1,36 @@
+module: 
+    name: uart-16650a
+    pretty-name: UART 16550A
+    descr: UART module compatible with 16550a implementation
+    parameters: none
+    ports:
+        - port: 
+            name: wb_bus
+            type: wishbone-slave
+            reproductible: true
+            addr-width: 3
+            data_width: 8
+            port-assignment:
+                clk_i:  {name: clk_i,   polarity: positive}
+                rst_i:  {name: rst_ni,  polarity: negative}
+                stb_i:  {name: stb_i,   polarity: positive}
+                addr_i: {name: addr_i,  polarity: positive}
+                data_i: {name: dat_i,   polarity: positive}
+                data_o: {name: dat_o,   polarity: positive}
+                sel_i:  {name: sel_i,   polarity: positive}
+                we_i:   {name: we_i,    polarity: positive}
+                ack_o:  {name: ack_o,   polarity: positive}
+                cyc_i:  {name: cyc_i,   polarity: positive}
+
+                clk_o:  none
+                rst_o:  none
+                stb_o:  none
+                addr_o: none
+                sel_o:  none
+                we_o:   none
+                ack_i:  none
+                cyc_o:  none
+        - port: {name: irq_o, direction: out, type: irq, polarity: positive}
+        - port: {name: rx_pin, type: input}
+        - port: {name: tx_pin, type: output}
+

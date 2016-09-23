@@ -1,3 +1,8 @@
+Files in this directory are copied from ao68000 project, available under [1].
+This project is licensed under BSD Simplified License, whis is available in
+LICENSE file.
+
+[1] https://github.com/alfikpl/ao68000 (access December 2015)
 # Description
 
 The OpenCores ao68000 IP Core is a Motorola MC68000 binary compatible processor.

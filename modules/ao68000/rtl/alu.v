@@ -2,6 +2,9 @@
  * ALU
  **********************************************************************************************************************/
 
+/* verilator lint_off WIDTH */
+/* verilator lint_off CASEINCOMPLETE */
+
 /*! \brief Arithmetic and Logic Unit.
  *
  * The alu module is responsible for performing all of the arithmetic and logic operations of the ao68000 processor.

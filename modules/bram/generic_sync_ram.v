@@ -4,7 +4,7 @@ module generic_sync_mem(
 	data_in,
 	data_out,
 	cs,
-	we,
+	we
 );
 // ----------------- params ---------------
 parameter DATA_WIDTH = 8;
