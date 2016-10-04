@@ -1,0 +1,12 @@
+*.swp
+*.swo
+*.patch
+a.out
+*.vcd
+obj
+*.vmem
+bin
+*.bin
+*.elf
+*.raw
+*.pdf
