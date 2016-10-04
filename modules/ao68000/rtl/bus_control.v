@@ -29,77 +29,77 @@
 module bus_control(
     //******************************************* external
     //****************** WISHBONE
-    input CLK_I,
-    input reset_n,
+    input 				CLK_I,
+    input 				reset_n,
 
-    output reg CYC_O,
-    output reg [31:2] ADR_O,
-    output reg [31:0] DAT_O,
-    input [31:0] DAT_I,
-    output reg [3:0] SEL_O,
-    output reg STB_O,
-    output reg WE_O,
+    output reg 			CYC_O,
+    output reg	[31:2]	ADR_O,
+    output reg	[31:0]	DAT_O,
+    input		[31:0]	DAT_I,
+    output reg	 [3:0]	SEL_O,
+    output reg			STB_O,
+    output reg			WE_O,
 
-    input ACK_I,
-    input ERR_I,
-    input RTY_I,
+    input				ACK_I,
+    input				ERR_I,
+    input				RTY_I,
 
     // TAG_TYPE: TGC_O
-    output reg SGL_O,
-    output reg BLK_O,
-    output reg RMW_O,
+    output reg			SGL_O,
+    output reg			BLK_O,
+    output reg			RMW_O,
 
     // TAG_TYPE: TGA_O
-    output reg [2:0] CTI_O,
-    output [1:0] BTE_O,
+    output reg	[2:0]	CTI_O,
+    output		[1:0]	BTE_O,
 
     // TAG_TYPE: TGC_O
-    output reg [2:0] fc_o,
+    output reg	[2:0]	fc_o, // m68k's function code
 
     //****************** OTHER
-    input [2:0] ipl_i,
-    output reg reset_o = 1'b0,
-    output reg blocked_o = 1'b0,
+    input		[2:0]	ipl_i,
+    output reg			reset_o = 1'b0,
+    output reg			blocked_o = 1'b0,
 
     //******************************************* internal
-    input supervisor_i,
-    input [2:0] ipm_i,
-    input [2:0] size_i,
-    input [31:0] address_i,
-    input address_type_i,
-    input read_modify_write_i,
-    input [31:0] data_write_i,
-    output reg [31:0] data_read_o,
+    input				supervisor_i,
+    input		[2:0]	ipm_i,
+    input		[2:0]	size_i,
+    input		[31:0]	address_i,
+    input				address_type_i,
+    input				read_modify_write_i,
+    input		[31:0]	data_write_i,
+    output reg	[31:0]	data_read_o,
 
-    input [31:0] pc_i,
-    input [1:0] pc_change_i,
-    output reg [79:0] prefetch_ir_o,
-    output reg prefetch_ir_valid_32_o = 1'b0,
-    output reg prefetch_ir_valid_o = 1'b0,
-    output reg prefetch_ir_valid_80_o = 1'b0,
+    input		[31:0]	pc_i,
+    input		[1:0]	pc_change_i,
+    output reg	[79:0]	prefetch_ir_o,
+    output reg			prefetch_ir_valid_32_o = 1'b0,
+    output reg			prefetch_ir_valid_o = 1'b0,
+    output reg			prefetch_ir_valid_80_o = 1'b0,
 
-    input do_reset_i,
-    input do_blocked_i,
-    input do_read_i,
-    input do_write_i,
-    input do_interrupt_i,
+    input				do_reset_i,
+    input				do_blocked_i,
+    input				do_read_i,
+    input				do_write_i,
+    input				do_interrupt_i,
 
-    output reg jmp_address_trap_o = 1'b0,
-    output reg jmp_bus_trap_o = 1'b0,
+    output reg			jmp_address_trap_o = 1'b0,
+    output reg			jmp_bus_trap_o = 1'b0,
     // read/write/interrupt
-    output reg finished_o,
+    output reg			finished_o,
 
-    output reg [7:0] interrupt_trap_o = 8'b0,
-    output reg [2:0] interrupt_mask_o = 3'b0,
+    output reg	[7:0]	interrupt_trap_o = 8'b0,
+    output reg	[2:0]	interrupt_mask_o = 3'b0,
 
     /* mask==0 && trap==0            nothing
      * mask!=0                        interrupt with spurious interrupt
      */
 
     // write = 0/read = 1
-    output reg rw_state_o,
-    output reg [2:0] fc_state_o,
-    output reg [31:0] fault_address_state_o
+    output reg			rw_state_o,
+    output reg	[2:0]	fc_state_o,
+    output reg	[31:0]	fault_address_state_o
 );
 
 assign BTE_O = 2'b00;
