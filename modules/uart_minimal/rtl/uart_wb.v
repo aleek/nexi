@@ -2,7 +2,6 @@
 * https://github.com/freecores/uart16550/blob/master/rtl/verilog/uart_wb.v
 */
 
-
 module nexi_uart_16550a_wb(
 	clk_i,
 	rst_ni,
