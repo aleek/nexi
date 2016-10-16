@@ -10,3 +10,4 @@ bin
 *.elf
 *.raw
 *.pdf
+*.pyc
