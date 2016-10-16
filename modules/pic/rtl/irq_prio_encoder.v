@@ -76,8 +76,8 @@ module irq_priority_encoder(
  */
 wire [7:0] prio_sum;
 wire at_least_one_irq_active;
-assign prio_sum[7] = |irq_matrix[63:56];
-assign prio_sum[6] = |irq_matrix[55:48];
+assign prio_sum[7] = |irq_matrix[63-:8];
+assign prio_sum[6] = |irq_matrix[55-:8];
 assign prio_sum[5] = |irq_matrix[47-:8];
 assign prio_sum[4] = |irq_matrix[39-:8];
 assign prio_sum[3] = |irq_matrix[31-:8];
@@ -112,7 +112,7 @@ wire [2:0]  pe_selected_prio;
  */
 priority_encoder pe(
 	.enable_i(at_least_one_irq_active),
-	.encoder_i(prio_sum),
+	.priorities_i(prio_sum),
 	.binary_o(pe_selected_prio),
 	.output_valid(pe_ov)
 );
@@ -122,7 +122,7 @@ priority_encoder pe(
  */
 priority_encoder one_hot_to_binary (
 	.enable_i(pe_ov),
-	.encoder_i(prio_flo[pe_selected_prio]),
+	.priorities_i(prio_flo[pe_selected_prio]),
 	.binary_o(most_important_irq),
 	.output_valid(output_valid)
 );
