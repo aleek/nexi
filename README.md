@@ -7,7 +7,6 @@ Nexi is an educational project to learn Verilog. When it's finished, it will all
 
 # Modules
 ## Wishbone modules
-(WB) means that this module has a wishbone interface
 - 10_100_mac - MII/RMII ethernet mac module
 - ao68000 - m68000 processor
 - cache - wishbone enabled processor cache
