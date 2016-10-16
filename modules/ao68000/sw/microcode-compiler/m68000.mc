@@ -11,10 +11,9 @@ instr
 	AN_ADDRESS(SSP) // load SSP address
 	AN_WE(SET)
 	PC(FROM_PREFETCH_IR)
+	# jump to main loop
+	PROCEDURE(jump_to_main_loop)
 endinstr
-
-# jump to main loop
-instr PROCEDURE(jump_to_main_loop)
 
 // clear internal flags
 MICROPC_ADDRESS_BUS_TRAP:
