@@ -50,6 +50,7 @@ assign { decoder_trap, decoder_micropc } =
     // Privilege violation and illegal instruction
 
     // ANDI to SR,EORI to SR,ORI to SR,RESET,STOP,RTE,MOVE TO SR,MOVE USP TO USP,MOVE USP TO An privileged instructions
+	// @TODO add MOVE from SR privileged also
     ( ( ir[15:0] == 16'b0000_0010_01_111_100 ||
           ir[15:0] == 16'b0000_1010_01_111_100 ||
           ir[15:0] == 16'b0000_0000_01_111_100 ||
@@ -284,53 +285,53 @@ assign { decoder_trap, decoder_micropc } =
 // load ea
 assign load_ea =
     (
-        (ea_type == `EA_TYPE_ALL && (ea_mod == 3'b000 || ea_mod == 3'b001 || (ea_mod == 3'b111 && ea_reg == 3'b100))) ||
-        (ea_type == `EA_TYPE_DATAALTER && ea_mod == 3'b000) ||
-        (ea_type == `EA_TYPE_DN_AN && (ea_mod == 3'b000 || ea_mod == 3'b001)) ||
-        (ea_type == `EA_TYPE_DATA && (ea_mod == 3'b000 || (ea_mod == 3'b111 && ea_reg == 3'b100)))
+        (ea_type == `EA_TYPE_ALL && (ea_mod == `ADDR_MOD_DN || ea_mod == `ADDR_MOD_AN || (ea_mod == `ADDR_MOD_IMM && ea_reg == `ADDR_REG_IMM))) ||
+        (ea_type == `EA_TYPE_DATAALTER && ea_mod == `ADDR_MOD_DN) ||
+        (ea_type == `EA_TYPE_DN_AN && (ea_mod == `ADDR_MOD_DN || ea_mod == `ADDR_MOD_AN)) ||
+        (ea_type == `EA_TYPE_DATA && (ea_mod == `ADDR_MOD_DN || (ea_mod == `ADDR_MOD_IMM && ea_reg == `ADDR_REG_IMM)))
     ) ? 9'd0 // no ea needed
     :
-    (ea_mod == 3'b010 && (
+    (ea_mod == `ADDR_MOD_INDIR && (
         ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_CONTROL_POSTINC || ea_type == `EA_TYPE_CONTROLALTER_PREDEC ||
         ea_type == `EA_TYPE_CONTROL || ea_type == `EA_TYPE_DATAALTER || ea_type == `EA_TYPE_MEMORYALTER ||
         ea_type == `EA_TYPE_DATA
     )) ? `MICROPC_LOAD_EA_An // (An)
     :
-    (ea_mod == 3'b011 && (
+    (ea_mod == `ADDR_MOD_POSTINC && (
         ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_CONTROL_POSTINC || ea_type == `EA_TYPE_MEMORYALTER ||
         ea_type == `EA_TYPE_DATAALTER || ea_type == `EA_TYPE_DATA
     )) ? `MICROPC_LOAD_EA_An_plus // (An)+
     :
-    (ea_mod == 3'b100 && (
+    (ea_mod == `ADDR_MOD_PREDEC && (
         ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_CONTROLALTER_PREDEC || ea_type == `EA_TYPE_DATAALTER ||
         ea_type == `EA_TYPE_MEMORYALTER ||    ea_type == `EA_TYPE_DATA
     )) ? `MICROPC_LOAD_EA_minus_An // -(An)
     :
-    (ea_mod == 3'b101 && (
+    (ea_mod == `ADDR_MOD_INDIR_OFFSET && (
         ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_CONTROL_POSTINC || ea_type == `EA_TYPE_CONTROLALTER_PREDEC ||
         ea_type == `EA_TYPE_CONTROL ||    ea_type == `EA_TYPE_DATAALTER || ea_type == `EA_TYPE_MEMORYALTER || ea_type == `EA_TYPE_DATA
     )) ? `MICROPC_LOAD_EA_d16_An // (d16, An)
     :
-    (ea_mod == 3'b110 && (
+    (ea_mod == ADDR_MOD_INDEX && (
         ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_CONTROL_POSTINC || ea_type == `EA_TYPE_CONTROLALTER_PREDEC ||
         ea_type == `EA_TYPE_CONTROL || ea_type == `EA_TYPE_DATAALTER || ea_type == `EA_TYPE_MEMORYALTER || ea_type == `EA_TYPE_DATA
     )) ? `MICROPC_LOAD_EA_d8_An_Xn // (d8, An, Xn)
     :
-    (ea_mod == 3'b111 && ea_reg == 3'b000 && (
+    (ea_mod == `ADDR_MOD_ABS && ea_reg == `ADDR_REG_ABS_W && (
         ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_CONTROL_POSTINC || ea_type == `EA_TYPE_CONTROLALTER_PREDEC ||
         ea_type == `EA_TYPE_CONTROL ||    ea_type == `EA_TYPE_DATAALTER || ea_type == `EA_TYPE_MEMORYALTER || ea_type == `EA_TYPE_DATA
     )) ? `MICROPC_LOAD_EA_xxx_W // (xxx).W
     :
-    (ea_mod == 3'b111 && ea_reg == 3'b001 && (
+    (ea_mod == `ADDR_MOD_ABS && ea_reg == ADDR_REG_ABS_L && (
         ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_CONTROL_POSTINC || ea_type == `EA_TYPE_CONTROLALTER_PREDEC ||
         ea_type == `EA_TYPE_CONTROL || ea_type == `EA_TYPE_DATAALTER || ea_type == `EA_TYPE_MEMORYALTER || ea_type == `EA_TYPE_DATA
     )) ? `MICROPC_LOAD_EA_xxx_L // (xxx).L
     :
-    (ea_mod == 3'b111 && ea_reg == 3'b010 && (
+    (ea_mod == `ADDR_MOD_PC && ea_reg == `ADDR_REG_PC_OFFSET && (
         ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_CONTROL_POSTINC || ea_type == `EA_TYPE_CONTROL || ea_type == `EA_TYPE_DATA
     )) ? `MICROPC_LOAD_EA_d16_PC // (d16, PC)
     :
-    (ea_mod == 3'b111 && ea_reg == 3'b011 && (
+    (ea_mod == `ADDR_MOD_PC && ea_reg == `ADDR_REG_PC_INDEX && (
         ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_CONTROL_POSTINC || ea_type == `EA_TYPE_CONTROL || ea_type == `EA_TYPE_DATA
     )) ? `MICROPC_LOAD_EA_d8_PC_Xn // (d8, PC, Xn)
     :
@@ -339,32 +340,34 @@ assign load_ea =
 
 // perform ea read
 assign perform_ea_read =
-    ( ea_mod == 3'b000 && (ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_DATAALTER || ea_type == `EA_TYPE_DN_AN ||
-      ea_type == `EA_TYPE_DATA) ) ?
+    ( ea_mod == `ADDR_MOD_DN &&
+        (ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_DATAALTER || ea_type == `EA_TYPE_DN_AN || ea_type == `EA_TYPE_DATA) ) ?
         `MICROPC_PERFORM_EA_READ_Dn :
-    ( ea_mod == 3'b001 && (ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_DN_AN) ) ? `MICROPC_PERFORM_EA_READ_An :
-    ( ea_mod == 3'b111 && ea_reg == 3'b100 && (ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_DATA) ) ?
+    ( ea_mod == `ADDR_MOD_AN &&
+        (ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_DN_AN) ) ?
+        `MICROPC_PERFORM_EA_READ_An :
+    ( ea_mod == `ADDR_MOD_IMM && ea_reg == `ADD_REG_IMM && (ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_DATA) ) ?
         `MICROPC_PERFORM_EA_READ_imm :
     `MICROPC_PERFORM_EA_READ_memory
 ;
 
 // perform ea write
 assign perform_ea_write =
-    ( ea_mod == 3'b000 && (ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_DATAALTER || ea_type == `EA_TYPE_DN_AN ||
-      ea_type == `EA_TYPE_DATA) ) ?
-        `MICROPC_PERFORM_EA_WRITE_Dn :
-    ( ea_mod == 3'b001 && (ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_DN_AN) ) ? `MICROPC_PERFORM_EA_WRITE_An :
+    ( ea_mod == `ADDR_MOD_DN &&
+        (ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_DATAALTER || ea_type == `EA_TYPE_DN_AN || ea_type == `EA_TYPE_DATA) ) ?
+            `MICROPC_PERFORM_EA_WRITE_Dn :
+    ( ea_mod == ADDR_MOD_AN && (ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_DN_AN) ) ? `MICROPC_PERFORM_EA_WRITE_An :
     `MICROPC_PERFORM_EA_WRITE_memory
 ;
 
 // save ea
 assign save_ea =
-    (ea_mod == 3'b011 && (
+    (ea_mod == `ADDR_MOD_POSTINC && (
         ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_CONTROL_POSTINC || ea_type == `EA_TYPE_MEMORYALTER ||
         ea_type == `EA_TYPE_DATAALTER || ea_type == `EA_TYPE_DATA
     )) ? `MICROPC_SAVE_EA_An_plus // (An)+
     :
-    (ea_mod == 3'b100 && (
+    (ea_mod == `ADDR_MOD_PREDEC && (
         ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_CONTROLALTER_PREDEC || ea_type == `EA_TYPE_DATAALTER ||
         ea_type == `EA_TYPE_MEMORYALTER || ea_type == `EA_TYPE_DATA
     )) ? `MICROPC_SAVE_EA_minus_An // -(An)

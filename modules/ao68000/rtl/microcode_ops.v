@@ -8,18 +8,19 @@
 `define EA_REG_3b111                                        3'd4
 `define EA_REG_3b100                                        3'd5
 
-`define EA_MOD_IDLE                                         4'd0
-`define EA_MOD_IR_5_3                                       4'd1
-`define EA_MOD_MOVEM_MOD_5_3                                4'd2
-`define EA_MOD_IR_8_6                                       4'd3
-`define EA_MOD_PREDEC                                       4'd4    // predecrement:    -(An)
-`define EA_MOD_3b111                                        4'd5    // extended mod
-`define EA_MOD_DN_PREDEC                                    4'd6    // MOD.DN_PREDEC: Dn 3'b000 (ir[3] == 1'b0), -(An) 3'b100 (ir[3] == 1'b1)
-`define EA_MOD_DN_AN_EXG                                    4'd7    // MOD.DN_AN_EXG: Dn 3'b000 (ir[7:3] == 5'b01000 or 5'b10001), An 3'b001 (ir[7:3] == 5'b01001)
-`define EA_MOD_POSTINC                                      4'd8    // MOD.POSTINC: postincrement (An)+ 3'b011
-`define EA_MOD_AN                                           4'd9    // MOD.AN: An 3'b001, saved result is sign-extended
-`define EA_MOD_DN                                           4'd10   // MOD.DN: Dn 3'b000
-`define EA_MOD_INDIRECTOFFSET                               4'd11   // MOD.INDIRECTOFFSET: (d16, An) 3'b101
+/* This field barely maps the m68k addressing modes. Be careful! */
+`define EA_MOD_IDLE                                         4'b0000
+`define EA_MOD_IR_5_3                                       4'b0001    // Take MOD from IR, bits 5:3
+`define EA_MOD_MOVEM_MOD_5_3                                4'b0010
+`define EA_MOD_IR_8_6                                       4'b0011    // Take MOD from IR, bits 8:6
+`define EA_MOD_PREDEC                                       4'b0100    // predecrement:    -(An)
+`define EA_MOD_3b111                                        4'b0101    // Depending on EA_REG: MOD_PC, MOD_IMM or MOD_ABS
+`define EA_MOD_DN_PREDEC                                    4'b0110    // MOD.DN_PREDEC: Dn 3'b000 (ir[3] == 1'b0), -(An) 3'b100 (ir[3] == 1'b1)
+`define EA_MOD_DN_AN_EXG                                    4'b0111    // MOD.DN_AN_EXG: Dn 3'b000 (ir[7:3] == 5'b01000 or 5'b10001), An 3'b001 (ir[7:3] == 5'b01001)
+`define EA_MOD_POSTINC                                      4'b1000    // MOD.POSTINC: postincrement (An)+ 3'b011
+`define EA_MOD_AN                                           4'b1001    // MOD.AN: An 3'b001, saved result is sign-extended
+`define EA_MOD_DN                                           4'b1010    // MOD.DN: Dn 3'b000
+`define EA_MOD_INDIRECTOFFSET                               4'b1011    // MOD.INDIRECTOFFSET: (d16, An) 3'b101
 
 `define EA_TYPE_IDLE                                        4'd0
 `define EA_TYPE_ALL                                         4'd1    // TYPE.ALL: all

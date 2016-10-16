@@ -210,14 +210,14 @@ always @(posedge clock or negedge reset_n) begin
     else if(ea_mod_control == `EA_MOD_IR_5_3)                   ea_mod <= ir[5:3];
     else if(ea_mod_control == `EA_MOD_MOVEM_MOD_5_3)            ea_mod <= movem_modreg[5:3];
     else if(ea_mod_control == `EA_MOD_IR_8_6)                   ea_mod <= ir[8:6];
-    else if(ea_mod_control == `EA_MOD_PREDEC)                   ea_mod <= 3'b100;
-    else if(ea_mod_control == `EA_MOD_3b111)                    ea_mod <= 3'b111;
-    else if(ea_mod_control == `EA_MOD_DN_PREDEC)                ea_mod <= (ir[3] == 1'b0) ? /* Dn */ 3'b000 : /* -(An) */ 3'b100;
-    else if(ea_mod_control == `EA_MOD_DN_AN_EXG)                ea_mod <= (ir[7:3] == 5'b01000 || ir[7:3] == 5'b10001) ? /* Dn */ 3'b000 : /* An */ 3'b001;
-    else if(ea_mod_control == `EA_MOD_POSTINC)                  ea_mod <= 3'b011;
-    else if(ea_mod_control == `EA_MOD_AN)                       ea_mod <= 3'b001;
-    else if(ea_mod_control == `EA_MOD_DN)                       ea_mod <= 3'b000;
-    else if(ea_mod_control == `EA_MOD_INDIRECTOFFSET)           ea_mod <= 3'b101;
+    else if(ea_mod_control == `EA_MOD_PREDEC)                   ea_mod <= `ADDR_MOD_PREDEC;
+    else if(ea_mod_control == `EA_MOD_3b111)                    ea_mod <= `ADDR_MOD_PC_ABS_IMM // PC, Absolute or Immediate;
+    else if(ea_mod_control == `EA_MOD_DN_PREDEC)                ea_mod <= (ir[3] == 1'b0) ? /* Dn */ `ADDR_MOD_DN : /* -(An) */ `ADDR_MOD_AN;
+    else if(ea_mod_control == `EA_MOD_DN_AN_EXG)                ea_mod <= (ir[7:3] == 5'b01000 || ir[7:3] == 5'b10001) ? /* Dn */ `ADDR_MOD_DN : /* An */ `ADDR_MOD_AN;
+    else if(ea_mod_control == `EA_MOD_POSTINC)                  ea_mod <= `ADDR_MOD_POSTINC;
+    else if(ea_mod_control == `EA_MOD_AN)                       ea_mod <= `ADDR_MOD_AN;
+    else if(ea_mod_control == `EA_MOD_DN)                       ea_mod <= `ADDR_MOD_DN;
+    else if(ea_mod_control == `EA_MOD_INDIRECTOFFSET)           ea_mod <= `ADDR_MOD_INDIR;
 end
 
 always @(posedge clock or negedge reset_n) begin
@@ -370,6 +370,10 @@ always @(posedge clock or negedge reset_n) begin
                                                                 trace_flag <= sr[15];
 end
 
+/*
+ * Group 0 of interrupts (Reset, Address Error, Bus error)
+ * See: M68000UM, chapter 6.2.3
+ */
 always @(posedge clock or negedge reset_n) begin
     if(reset_n == 1'b0)                                         group_0_flag <= 1'b0;
     else if(group_0_flag_control == `GROUP_0_FLAG_SET)          group_0_flag <= 1'b1;
