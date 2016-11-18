@@ -76,14 +76,14 @@ begin
 				if(cnt) 
 				begin
 					cnt <= cnt-1;
-				else begin
+				end else begin
 					/* writing sampled data into the register */
 					cnt <= 4'd15;
 					rxdata <= {rxbit,rxdata[7:1]};
 					if(bcnt<8) 
 					begin
 						bcnt <= bcnt + 1;
-					else begin
+						end else begin
 						start <= 1'b0;
 						rxdone <= 1'b1;
 					end
@@ -91,5 +91,6 @@ begin
 			end
 		end
 	end
+end
 endmodule
 

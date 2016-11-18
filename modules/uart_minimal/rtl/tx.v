@@ -50,20 +50,17 @@ begin
 				begin
 					tx_r <= tx_data[0];
 					tx_data <= {tx_data[0], tx_data[7:1]};
-				end
-				else
-				begin
+				end else begin
 					if(ncnt == 4'd9)
 					begin
 						tx_r <= 1'b1;
-				end else
-				begin
-					done_r <= 1'b1;
+					end else begin
+						done_r <= 1'b1;
+					end
 				end
 			end
 		end
 	end
+end
 endmodule
-
-
 

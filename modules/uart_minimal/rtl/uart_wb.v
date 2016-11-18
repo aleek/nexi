@@ -44,10 +44,10 @@ output 						tx_pin;
 
 
 /* internal registers/wires */
-`define RBR 0 /* receive buffer register */
-`define THR 1 /* transmit holder register */
-`define IER 2 /* interrupt enable register */
-`define ISR 3 /* interrupt status register */
+`define RBR 2'b00 /* receive buffer register */
+`define THR 2'b01 /* transmit holder register */
+`define IER 2'b10 /* interrupt enable register */
+`define ISR 2'b11 /* interrupt status register */
 
 `define ISR_TX_IRQ 8'h01
 `define ISR_RX_IRQ 8'h02
@@ -59,7 +59,7 @@ reg [7:0] isr; /* interrupt status register */
 
 reg data_to_transmit;
 reg command_send;
-reg tx_done_ack;
+wire tx_done_ack;
 
 /* wishbone ACK FSM */
 reg [1:0] wbstate;
@@ -75,26 +75,26 @@ begin
 		ack_o <= 1'b0;
 		wbstate <= 1'b0;
 		data_o <= 8'h00;
-	end else
+	end else begin
 		if(cyc_i & stb_i & ~ack_o) begin
 			if(we_i) begin
-				case (addr_i):
-					`THR : thr <= data_i; data_to_transmit <= 1'b1;
-					`IER : ier <= data_i[0]; 
-				end
+				case (addr_i)
+					`THR: begin thr <= data_i; data_to_transmit <= 1'b1; end
+					`IER: ier <= data_i[0]; 
+				endcase
 				ack_o <= 1'b1;
 			end
 			
-			case (addr_i):
+			case (addr_i)
 				`RBR : data_o <= rbr;
-				`ISR : data_o <= isr; isr <= 8'h00;
-			end
+				`ISR : begin data_o <= isr; isr <= 8'h00; end
+			endcase
 		end
 		if(!cyc_i & !stb_i & ack_o) ack_o <= 1'b0;
 	end
 end
 
-nexi_uart_tx_instance nexi_uart_tx(
+nexi_uart_tx nexi_uart_tx_instance(
 	.clk_1x_bps(clk_i), /* TODO change the clock */
 	.rst_n(rst_n),
 	.command_send(command_send),
@@ -104,39 +104,39 @@ nexi_uart_tx_instance nexi_uart_tx(
 );
 
 /* process transmit */
-reg [1:0] txstate;
-`define S_IDLE 0
-`define S_WAIT_TX 1
-`define S_WAIT_FINISH 2
+reg [2:0] txstate;
+`define S_TX_IDLE 3'b001
+`define S_WAIT_TX 3'b010
+`define S_WAIT_FINISH 3'b100
 always @(posedge clk_i)
 begin
 	if(~rst_ni) begin
 		data_to_transmit <= 1'b0;
-		txstate <= S_IDLE;
+		txstate <= `S_TX_IDLE;
 		thr <= 8'h00;
-	end else
+	end else begin
 		case(txstate)
-			S_IDLE: begin
+			`S_TX_IDLE: begin
 				if(data_to_transmit) begin
 					command_send <= 1'b1;
-					txstate <= S_WAIT_TX1;
+					txstate <= `S_WAIT_TX;
 				end
 			end
-			S_WAIT_TX: begin
+			`S_WAIT_TX: begin
 				if(tx_done_ack) begin
-					txstate <= S_WAIT_TX2;
+					txstate <= `S_WAIT_FINISH;
 				end
 			end
-			S_WAIT_FINISH: begin
+			`S_WAIT_FINISH: begin
 				if(tx_done_ack) begin
 					command_send <= 1'b0;
 					thr <= 8'h00;
 					isr <= ier & `ISR_TX_IRQ;
 					data_to_transmit <= 1'b0;
-					txstate <= S_IDLE;
+					txstate <= `S_TX_IDLE;
 				end
 			end
-		end
+		endcase
 	end
 end
 
@@ -147,9 +147,9 @@ reg [1:0] rxstate;
 
 reg data_ready;
 reg rx_done_ack;
-reg [7:0] rx_data_buf;
+wire [7:0] rx_data_buf;
 
-nexi_uart_rx_instance nexi_uart_rx(
+nexi_uart_rx nexi_uart_rx_instance(
 	.clk_16x_bps(clk_i),
 	.rst_n(rst_ni),
 	.rx_pin(rx_pin),
@@ -161,27 +161,26 @@ nexi_uart_rx_instance nexi_uart_rx(
 always @(posedge clk_i)
 begin
 	if(~rst_ni) begin
-		read_ack <= 1'b0;
-		rxstate <= S_IDLE;
-		rx_data_buf <= 8'h00;
+		rx_done_ack <= 1'b0;
+		rxstate <= `S_RX_IDLE;
 		rbr <= 8'h00;
-	else begin 
+	end else begin 
 		case(rxstate)
-			S_RX_IDLE : begin
+			`S_RX_IDLE : begin
 				if(rx_data_ready) begin
 					/* we don't care, if user haven't read last byte, we just
 						* overwrite it. */
 					rbr <= rx_data_buf;
-					read_ack <= 1'b1;
-					rxstate <= S_RX_FINISH;
+					rx_done_ack <= 1'b1;
+					rxstate <= `S_RX_FINISH;
 					isr <= ier & `ISR_RX_IRQ;
 				end
 			end
-			case S_RX_FINISH : begin
-				read_ack <= 1'b0;
-				rxstate <= S_RX_IDLE;
+			`S_RX_FINISH : begin
+				rx_done_ack <= 1'b0;
+				rxstate <= `S_RX_IDLE;
 			end
-		end
+		endcase
 	end
 end
 
@@ -191,19 +190,14 @@ begin
 	if(~rst_ni) begin
 		isr <= 8'h00;
 		ier <= 8'h00;
-	end else
+	end else begin
 		if(isr) begin
 			irq_o <= 1'b1;
-		end else
+		end else begin
 			irq_o <= 1'b0;
 		end
 	end
 end
 
-
-
-
-
-
-
+endmodule
 
