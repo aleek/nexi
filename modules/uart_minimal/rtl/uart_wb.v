@@ -104,10 +104,11 @@ nexi_uart_tx nexi_uart_tx_instance(
 );
 
 /* process transmit */
-reg [2:0] txstate;
-`define S_TX_IDLE 3'b001
-`define S_WAIT_TX 3'b010
-`define S_WAIT_FINISH 3'b100
+reg [3:0] txstate;
+`define S_TX_IDLE     4'b0001
+`define S_WAIT_TX1    4'b0010
+`define S_WAIT_TX2    4'b0100
+`define S_WAIT_FINISH 4'b1000
 always @(posedge clk_i)
 begin
 	if(~rst_ni) begin
@@ -119,17 +120,22 @@ begin
 			`S_TX_IDLE: begin
 				if(data_to_transmit) begin
 					command_send <= 1'b1;
-					txstate <= `S_WAIT_TX;
+					txstate <= `S_WAIT_TX1;
 				end
 			end
-			`S_WAIT_TX: begin
+			`S_WAIT_TX1: begin
+				if(~tx_done_ack) begin
+					command_send <= 1'b0;
+					txstate <= `S_WAIT_TX2;
+				end
+			end
+			`S_WAIT_TX2: begin
 				if(tx_done_ack) begin
 					txstate <= `S_WAIT_FINISH;
 				end
 			end
 			`S_WAIT_FINISH: begin
 				if(tx_done_ack) begin
-					command_send <= 1'b0;
 					thr <= 8'h00;
 					isr <= ier & `ISR_TX_IRQ;
 					data_to_transmit <= 1'b0;
