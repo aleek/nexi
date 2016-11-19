@@ -12,7 +12,7 @@ reg done_r;
 reg [3:0] cnt;
 wire [3:0] ncnt;
 reg [7:0] tx_data;
-reg send_sync,send_sync_tmp;
+reg send_cmd,send_cmd_tmp;
 
 assign ncnt = cnt + 1;
 assign tx_pin = tx_r;
@@ -21,8 +21,8 @@ assign done_ack = done_r;
 /* metastability fence */
 always @(posedge clk_1x_bps)
 begin
-	send_sync_tmp <= command_send;
-	send_sync <= send_sync_tmp;
+	send_cmd_tmp <= command_send;
+	send_cmd <= send_cmd_tmp;
 end
 
 always @(posedge clk_1x_bps)
@@ -34,7 +34,7 @@ begin
 	end
 	else
 	begin
-		if(send_sync & done_r)
+		if(send_cmd & done_r)
 		begin
 			done_r	<= 1'b0;
 			cnt		<= 4'b0;
