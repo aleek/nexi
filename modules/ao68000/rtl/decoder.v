@@ -1,17 +1,22 @@
-/***********************************************************************************************************************
- * Instruction decoder
- **********************************************************************************************************************/
-
 /*! \brief Decode instruction and addressing mode.
  *
- * The decoder is an instruction and addressing mode decoder. For instructions it takes as input the ir register
- * from the registers module. The output of the decoder, in this case, is a microcode address of the first microcode
+ * The decoder is an instruction and addressing mode decoder.
+ * For instructions it takes as input the ir register
+ * from the registers module. The output of the decoder,
+ * in this case, is a microcode address of the first microcode
  * word that performs the instruction.
  *
- * In case of addressing mode decoding, the output is the address of the first microcode word that performs the operand
- * loading or saving. This address is obtained from the currently selected addressing mode saved in the ea_mod
- * and ea_type registers in the registers module.
+ * In case of addressing mode decoding,
+ * the output is the address of the first microcode word
+ * that performs the operand loading or saving.
+ * This address is obtained from the currently selected addressing mode 
+ * saved in the ea_mod and ea_type registers in the registers module.
  */
+
+`include "microcode_ops.vh"
+`include "microcode.vh"
+`include "addressing_modes.vh"
+
 module decoder(
     input           clock,
     input           reset_n,
@@ -346,7 +351,7 @@ assign perform_ea_read =
     ( ea_mod == `ADDR_MOD_AN &&
         (ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_DN_AN) ) ?
         `MICROPC_PERFORM_EA_READ_An :
-    ( ea_mod == `ADDR_MOD_IMM && ea_reg == `ADD_REG_IMM && (ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_DATA) ) ?
+    ( ea_mod == `ADDR_MOD_IMM && ea_reg == `ADDR_REG_IMM && (ea_type == `EA_TYPE_ALL || ea_type == `EA_TYPE_DATA) ) ?
         `MICROPC_PERFORM_EA_READ_imm :
     `MICROPC_PERFORM_EA_READ_memory
 ;

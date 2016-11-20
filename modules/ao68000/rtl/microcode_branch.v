@@ -1,16 +1,19 @@
-/***********************************************************************************************************************
- * Microcode branch
- **********************************************************************************************************************/
-
 /*! \brief Select the next microcode word to execute.
  *
- * The microcode_branch module is responsible for selecting the next microcode word to execute. This decision is based
- * on the value of the current microcode word, the value of the interrupt privilege level, the state of the current
- * bus cycle and other internal signals.
+ * The microcode_branch module is responsible
+ * for selecting the next microcode word to execute.
+ * This decision is based on the value of the current microcode word,
+ * the value of the interrupt privilege level,
+ * the state of the current bus cycle and other internal signals.
  *
- * The microcode_branch module implements a simple stack for the microcode addresses. This makes it possible to call
+ * The microcode_branch module implements a simple stack
+ * for the microcode addresses. This makes it possible to call
  * subroutines inside the microcode.
  */
+
+`include "microcode_ops.vh"
+`include "microcode.vh"
+
 module microcode_branch(
     input clock,
     input reset_n,

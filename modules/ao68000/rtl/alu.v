@@ -1,10 +1,3 @@
-/***********************************************************************************************************************
- * ALU
- **********************************************************************************************************************/
-
-/* verilator lint_off WIDTH */
-/* verilator lint_off CASEINCOMPLETE */
-
 /*! \brief Arithmetic and Logic Unit.
  *
  * The alu module is responsible for performing all of the arithmetic and logic operations of the ao68000 processor.
@@ -14,6 +7,9 @@
  * The alu module also contains the status register (SR) with the condition code register. The microcode decides what
  * operation the alu performs.
  */
+
+`include "microcode_ops.vh"
+
 module alu(
     input clock,
     input reset_n,

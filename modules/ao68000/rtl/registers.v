@@ -1,19 +1,21 @@
-/***********************************************************************************************************************
- * Registers
- **********************************************************************************************************************/
-
-/* verilator lint_off WIDTH */
 /*! \brief Microcode controlled registers.
  *
- * Most of the ao68000 IP core registers are located in this module. At every clock cycle the microcode controls what
- * to save into these registers. Some of the more important registers include:
+ * Most of the ao68000 IP core registers are located in this module.
+ * At every clock cycle the microcode controls
+ * what to save into these registers.
+ * Some of the more important registers include:
  *  - operand1, operand2 registers are inputs to the ALU,
- *  - address, size, do_read_flag, do_write_flag, do_interrupt_flag registers tell the bus_control module what kind
+ *  - address, size, do_read_flag, do_write_flag, do_interrupt_flag
+ *    registers tell the bus_control module what kind
  *    of bus cycle to perform,
  *  - pc register stores the current program counter,
  *  - ir register stores the current instruction word,
  *  - ea_mod, ea_type registers store the currently selected addressing mode.
  */
+`include "microcode_ops.vh"
+`include "microcode.vh"
+`include "addressing_modes.vh"
+
 module registers(
     input clock,
     input reset_n,
@@ -211,7 +213,7 @@ always @(posedge clock or negedge reset_n) begin
     else if(ea_mod_control == `EA_MOD_MOVEM_MOD_5_3)            ea_mod <= movem_modreg[5:3];
     else if(ea_mod_control == `EA_MOD_IR_8_6)                   ea_mod <= ir[8:6];
     else if(ea_mod_control == `EA_MOD_PREDEC)                   ea_mod <= `ADDR_MOD_PREDEC;
-    else if(ea_mod_control == `EA_MOD_3b111)                    ea_mod <= `ADDR_MOD_PC_ABS_IMM // PC, Absolute or Immediate;
+    else if(ea_mod_control == `EA_MOD_3b111)                    ea_mod <= `ADDR_MOD_PC_ABS_IMM; // PC, Absolute or Immediate
     else if(ea_mod_control == `EA_MOD_DN_PREDEC)                ea_mod <= (ir[3] == 1'b0) ? /* Dn */ `ADDR_MOD_DN : /* -(An) */ `ADDR_MOD_AN;
     else if(ea_mod_control == `EA_MOD_DN_AN_EXG)                ea_mod <= (ir[7:3] == 5'b01000 || ir[7:3] == 5'b10001) ? /* Dn */ `ADDR_MOD_DN : /* An */ `ADDR_MOD_AN;
     else if(ea_mod_control == `EA_MOD_POSTINC)                  ea_mod <= `ADDR_MOD_POSTINC;

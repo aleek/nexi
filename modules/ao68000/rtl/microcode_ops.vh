@@ -1,3 +1,5 @@
+`ifndef AO68000_MICROCODE_OPS_VH
+`define AO68000_MICROCODE_OPS_VH
 /***********************************************************************************************************************
  * Definitions of microcode operations - parsed by ao68000_tool to generate the defines in the section below
  **********************************************************************************************************************/
@@ -248,3 +250,4 @@
 `define PROCEDURE_call_read                                 4'd14   // load_ea + perform_ea_read
 `define PROCEDURE_call_write                                4'd15   // perform_ea_write + save_ea + return
 
+`endif
