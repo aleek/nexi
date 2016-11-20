@@ -59,34 +59,34 @@ begin
 		if(rxdone)
 		begin
 			if(rd_ack_sync2) rxdone <= 1'b0;
+		end
 
-			if(rx_m & ~rx_sync2 & ~start)
-			begin
-				start <= 1'b1;
-				cnt   <= 4'd15;
-				bcnt  <= 4'd0;
-			end
+		if(rx_m & ~rx_sync2 & ~start)
+		begin
+			start <= 1'b1;
+			cnt   <= 4'd15;
+			bcnt  <= 4'd0;
+		end
 
-			if(start)
+		if(start)
+		begin
+			/* sampling the input */
+			if(cnt == 5'd11) r3 <= rx_sync2;
+			if(cnt == 5'd8)  r2 <= rx_sync2;
+			if(cnt == 5'd4)  r1 <= rx_sync2;
+			if(cnt) 
 			begin
-				/* sampling the input */
-				if(cnt == 5'd11) r3 <= rx_sync2;
-				if(cnt == 5'd8)  r2 <= rx_sync2;
-				if(cnt == 5'd4)  r1 <= rx_sync2;
-				if(cnt) 
+				cnt <= cnt-1;
+			end else begin
+				/* writing sampled data into the register */
+				cnt <= 4'd15;
+				rxdata <= {rxbit,rxdata[7:1]};
+				if(bcnt<8) 
 				begin
-					cnt <= cnt-1;
-				end else begin
-					/* writing sampled data into the register */
-					cnt <= 4'd15;
-					rxdata <= {rxbit,rxdata[7:1]};
-					if(bcnt<8) 
-					begin
-						bcnt <= bcnt + 1;
-						end else begin
-						start <= 1'b0;
-						rxdone <= 1'b1;
-					end
+					bcnt <= bcnt + 1;
+					end else begin
+					start <= 1'b0;
+					rxdone <= 1'b1;
 				end
 			end
 		end

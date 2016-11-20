@@ -42,12 +42,20 @@ output reg					irq_o;
 input 						rx_pin;
 output 						tx_pin;
 
+/* clocks */
+wire clk_rx;
+wire clk_tx;
+nexi_uart_clocks uart_clk(
+	.clk(clk_i),
+	.clk_rx(clk_rx),
+	.clk_tx(clk_tx)
+);
 
 /* internal registers/wires */
-`define RBR 2'b00 /* receive buffer register */
-`define THR 2'b01 /* transmit holder register */
-`define IER 2'b10 /* interrupt enable register */
-`define ISR 2'b11 /* interrupt status register */
+`define RBR 3'b000 /* receive buffer register */
+`define THR 3'b001 /* transmit holder register */
+`define IER 3'b010 /* interrupt enable register */
+`define ISR 3'b011 /* interrupt status register */
 
 `define ISR_TX_IRQ 8'h01
 `define ISR_RX_IRQ 8'h02
@@ -71,32 +79,32 @@ reg [1:0] wbstate;
 /* register operations */
 always @(posedge clk_i)
 begin
-	if(rst_ni) begin
+	if(~rst_ni) begin
 		ack_o <= 1'b0;
-		wbstate <= 1'b0;
+		wbstate <= `S_IDLE;
 		data_o <= 8'h00;
 	end else begin
 		if(cyc_i & stb_i & ~ack_o) begin
 			if(we_i) begin
 				case (addr_i)
 					`THR: begin thr <= data_i; data_to_transmit <= 1'b1; end
-					`IER: ier <= data_i[0]; 
+					`IER: ier <= data_i; 
 				endcase
-				ack_o <= 1'b1;
 			end
 			
 			case (addr_i)
 				`RBR : data_o <= rbr;
 				`ISR : begin data_o <= isr; isr <= 8'h00; end
 			endcase
+			ack_o <= 1'b1;
 		end
 		if(!cyc_i & !stb_i & ack_o) ack_o <= 1'b0;
 	end
 end
 
 nexi_uart_tx nexi_uart_tx_instance(
-	.clk_1x_bps(clk_i), /* TODO change the clock */
-	.rst_n(rst_n),
+	.clk_1x_bps(clk_tx), /* TODO change the clock */
+	.rst_n(rst_ni),
 	.command_send(command_send),
 	.tx_pin(tx_pin),
 	.done_ack(tx_done_ack),
@@ -137,7 +145,7 @@ begin
 			`S_WAIT_FINISH: begin
 				if(tx_done_ack) begin
 					thr <= 8'h00;
-					isr <= ier & `ISR_TX_IRQ;
+					isr <= isr | (ier & `ISR_TX_IRQ);
 					data_to_transmit <= 1'b0;
 					txstate <= `S_TX_IDLE;
 				end
@@ -156,7 +164,7 @@ reg rx_done_ack;
 wire [7:0] rx_data_buf;
 
 nexi_uart_rx nexi_uart_rx_instance(
-	.clk_16x_bps(clk_i),
+	.clk_16x_bps(clk_rx),
 	.rst_n(rst_ni),
 	.rx_pin(rx_pin),
 	.read_ack(rx_done_ack),
@@ -179,12 +187,14 @@ begin
 					rbr <= rx_data_buf;
 					rx_done_ack <= 1'b1;
 					rxstate <= `S_RX_FINISH;
-					isr <= ier & `ISR_RX_IRQ;
+					isr <= isr | (ier & `ISR_RX_IRQ);
 				end
 			end
 			`S_RX_FINISH : begin
-				rx_done_ack <= 1'b0;
-				rxstate <= `S_RX_IDLE;
+				if(~rx_data_ready) begin
+					rx_done_ack <= 1'b0;
+					rxstate <= `S_RX_IDLE;
+				end
 			end
 		endcase
 	end
