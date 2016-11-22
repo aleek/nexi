@@ -88,7 +88,7 @@ generic_sync_mem #
 	);
 
 initial begin
-	$readmemb( "/home/aleek/src/m68k/nexi/rtl/m68000/ao68000_microcode.vmem", micro_rom_inst.mem);
+	$readmemb( "/home/aleek/src/m68k/nexi/modules/ao68000/ao68000_microcode.vmem", micro_rom_inst.mem);
 end
 
 always @(posedge clock or negedge reset_n) begin
