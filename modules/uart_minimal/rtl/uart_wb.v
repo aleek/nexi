@@ -11,6 +11,7 @@ module nexi_uart_16550a_wb(
 	cyc_i,
 	addr_i,
 	data_i,
+	sel_i,
 
 	ack_o,
 	data_o,
@@ -32,10 +33,11 @@ input 						we_i;
 input 						stb_i; /* a.k.a. chip select */
 input 						cyc_i;
 input [2:0] 				addr_i;
-input [7:0] 				data_i;
+input [31:0] 				data_i;
+input [3:0]					sel_i;
 
 output reg 					ack_o;
-output reg [7:0] 			data_o;
+output reg [31:0] 			data_o;
 output reg					irq_o;
 
 /* uart pins */
@@ -52,10 +54,10 @@ nexi_uart_clocks uart_clk(
 );
 
 /* internal registers/wires */
-`define RBR 3'b000 /* receive buffer register */
-`define THR 3'b001 /* transmit holder register */
-`define IER 3'b010 /* interrupt enable register */
-`define ISR 3'b011 /* interrupt status register */
+`define RBR 4'b1000 /* receive buffer register */
+`define THR 4'b0100 /* transmit holder register */
+`define IER 4'b0010 /* interrupt enable register */
+`define ISR 4'b0001 /* interrupt status register */
 
 `define ISR_TX_IRQ 8'h01
 `define ISR_RX_IRQ 8'h02
@@ -86,15 +88,15 @@ begin
 	end else begin
 		if(cyc_i & stb_i & ~ack_o) begin
 			if(we_i) begin
-				case (addr_i)
-					`THR: begin thr <= data_i; data_to_transmit <= 1'b1; end
-					`IER: ier <= data_i; 
+				case (sel_i)
+					`THR: begin thr <= data_i[23:16]; data_to_transmit <= 1'b1; end
+					`IER: ier <= data_i[15:8];
 				endcase
 			end
 			
-			case (addr_i)
-				`RBR : data_o <= rbr;
-				`ISR : begin data_o <= isr; isr <= 8'h00; end
+			case (sel_i)
+				`RBR : begin data_o <= { rbr, 24'h000000}; end
+				`ISR : begin data_o <= {24'h000000, isr}; isr <= 8'h00; end
 			endcase
 			ack_o <= 1'b1;
 		end
@@ -201,6 +203,7 @@ begin
 end
 
 /* interrupt processing */
+/* TODO change to combinational model: assign irq_o <= |isr; */
 always @(posedge clk_i)
 begin
 	if(~rst_ni) begin
