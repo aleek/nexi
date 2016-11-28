@@ -1,0 +1,1632 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 9">
+<meta name=Originator content="Microsoft Word 9">
+<link rel=File-List href="http://pasti.fxatari.com/68kdocs/68kPrefetch_files/filelist.xml">
+<link rel=Edit-Time-Data href="http://pasti.fxatari.com/68kdocs/68kPrefetch_files/editdata.mso">
+<!--[if !mso]>
+<style>
+v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style>
+<![endif]-->
+<title>Instruction prefetch on the 68000 processor</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>jorge</o:Author>
+  <o:LastAuthor>jorge</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>869</o:TotalTime>
+  <o:Created>2005-07-27T17:26:00Z</o:Created>
+  <o:LastSaved>2005-07-27T17:26:00Z</o:LastSaved>
+  <o:Pages>11</o:Pages>
+  <o:Words>2719</o:Words>
+  <o:Characters>15500</o:Characters>
+  <o:Lines>129</o:Lines>
+  <o:Paragraphs>31</o:Paragraphs>
+  <o:CharactersWithSpaces>19035</o:CharactersWithSpaces>
+  <o:Version>9.6926</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]-->
+<style>
+<!--
+ /* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-font-kerning:0pt;}
+h2
+	{mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:2;
+	font-size:14.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";
+	font-weight:normal;}
+h3
+	{mso-style-next:Normal;
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:3;
+	font-size:14.0pt;
+	mso-bidi-font-size:12.0pt;
+	font-family:"Times New Roman";}
+span.code
+	{mso-style-name:code;
+	mso-ascii-font-family:"Courier New";
+	mso-hansi-font-family:"Courier New";}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+@list l0
+	{mso-list-id:259293100;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-354642526 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l0:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l1
+	{mso-list-id:395515052;
+	mso-list-type:hybrid;
+	mso-list-template-ids:166620312 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l1:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l2
+	{mso-list-id:442841126;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-2135009278 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l2:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l3
+	{mso-list-id:491337656;
+	mso-list-type:hybrid;
+	mso-list-template-ids:2020362098 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l3:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l4
+	{mso-list-id:756369082;
+	mso-list-type:hybrid;
+	mso-list-template-ids:750562108 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l4:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l5
+	{mso-list-id:779952751;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1509032504 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l5:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l6
+	{mso-list-id:800541775;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1845294176 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l6:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l7
+	{mso-list-id:802045936;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1262897906 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l7:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l8
+	{mso-list-id:1114598192;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-787948180 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l8:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l9
+	{mso-list-id:1152603239;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1478666474 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l9:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l10
+	{mso-list-id:1184201815;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1050738684 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l10:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l11
+	{mso-list-id:1228229781;
+	mso-list-type:hybrid;
+	mso-list-template-ids:728955114 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l11:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l12
+	{mso-list-id:1251235523;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-1762749370 67698703 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l12:level1
+	{mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l13
+	{mso-list-id:1361935793;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-247719448 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l13:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l14
+	{mso-list-id:1363245915;
+	mso-list-type:hybrid;
+	mso-list-template-ids:723568152 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l14:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l15
+	{mso-list-id:1384021348;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1950357248 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l15:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l16
+	{mso-list-id:1400253222;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1105087856 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l16:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l17
+	{mso-list-id:1407731087;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-1083427580 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l17:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l18
+	{mso-list-id:1434596775;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-919843692 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l18:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l19
+	{mso-list-id:1517845004;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-661220142 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l19:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l20
+	{mso-list-id:1522626516;
+	mso-list-type:hybrid;
+	mso-list-template-ids:220736914 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l20:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l21
+	{mso-list-id:1614092531;
+	mso-list-type:hybrid;
+	mso-list-template-ids:93516588 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l21:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l22
+	{mso-list-id:1640070283;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1859259952 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l22:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l23
+	{mso-list-id:1662733576;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1895087232 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l23:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l24
+	{mso-list-id:1781100367;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-884705136 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l24:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l25
+	{mso-list-id:2010014747;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1932317974 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l25:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+@list l26
+	{mso-list-id:2130388958;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1239458978 67698705 67698713 67698715 67698703 67698713 67698715 67698703 67698713 67698715;}
+@list l26:level1
+	{mso-level-text:"%1\)";
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+<!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="2050"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+  <o:regrouptable v:ext="edit">
+   <o:entry new="1" old="0"/>
+   <o:entry new="2" old="0"/>
+  </o:regrouptable>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body lang=EN-US style='tab-interval:.5in'>
+
+<div class=Section1>
+
+<h2 align=center style='text-align:center'>Instruction prefetch on the Motorola
+68000 processor</h2>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Version 1.3</p>
+
+<p class=MsoNormal>Copyright © 2005 by Jorge Cwik.</p>
+
+<p class=MsoNormal>http://pasti.fxatari.com</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>This documented may be freely distributed as long as is not
+modified in anyway.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><b>Chapter I:<span style='mso-tab-count:1'>       </span>Introduction<o:p></o:p></b></p>
+
+<p class=MsoNormal><b>Chapter II:<span style='mso-tab-count:1'>     </span>Technical
+description<o:p></o:p></b></p>
+
+<p class=MsoNormal><b>Chapter III:<span style='mso-tab-count:1'>    </span>Prefetch
+tables<o:p></o:p></b></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3>Introduction</h3>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Most CPUs, including many old 8-bit ones, read from the
+instruction stream ahead of execution. This mechanism is usually known as <i>prefetch</i>,
+<i>queue</i> or <i>pipeline</i>. The main goal is to optimize resources and
+gain in performance thanks to concurrent execution.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Modern processors implement this very aggressively and
+attempt to fill the prefetch queue as much and as early as possible. A modern
+CPU can partially process one instruction while other is executing, or even
+actually execute multiple instructions simultaneously (superscaling or
+multicore). </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The 68000 is not as powerful, it is quite an old CPU. It
+can’t execute two instructions at the same time. But it can read and decode the
+next instruction while the current one is being executed.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The prefetch queue in the 68000 is a simple FIFO (first in,
+first out) with space for two words (four bytes). This means that before <b>any</b>
+instruction starts execution, its opcode word and the next one were already
+read. The second word, depending on the instruction, could be an extension word
+for the current instruction, or the opcode for the next one.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>A modern CPU usually has more or less independent separate
+units. One unit processes actual CPU operations such as arithmetic or logic
+operations, while other unit fills the prefetch queue. This way the prefetch
+unit can attempt to read from the instruction stream whenever the bus is free
+and there is still enough space in the queue. And the CPU can keep its internal
+processing as long as operations are pending and data is available. So one unit
+normally doesn’t need to wait for the other one. If the prefetch unit is
+delayed because external RAM (or ROM) is not fast enough, this won’t necessary
+delay internal execution.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>It is important to understand that the 68000 prefetch is
+rather simple, and not as complex as in a modern CPU. All bus accesses,
+including prefetch ones, are fixed in microcode. Different instructions might
+perform the prefetch access differently than other instructions. But for a
+specific opcode, prefetchs are always executed exactly at the same cycles. The
+actual absolute time depends on the external system. And if any bus access
+(prefetch or not) is delayed because of wait states, then the whole CPU process
+is stalled.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The prefetch queue is re-filled during the execution of an
+instruction. Most instructions perform as many prefetch cycles as the total
+number of words in the instruction. For example <span class=code><span
+style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>NOP</span></span>,
+the simplest instruction, it performs one prefetch at the address two words
+(four bytes) above the location of the <span class=code><span style='font-family:
+"Courier New";mso-bidi-font-family:"Times New Roman"'>NOP</span></span>. <span
+class=code><span style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>MOVE
+$10000,$20000</span></span>, one possible form of the longest instruction,
+performs five prefetch cycles.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The exceptions are instructions that modify the instruction
+stream, such as branches. They sometimes need to perform extra prefetch cycles
+from the new modified program counter.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h1>Prefetch optimization<span style='font-weight:normal'><o:p></o:p></span></h1>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The prefetch queue results in faster execution due to
+optimization of CPU resources. On one side bus utilization is optimized. Many
+instructions have cycles that don’t need to access the external bus. The extreme
+cases are slow instructions like <span class=code><span style='font-family:
+"Courier New";mso-bidi-font-family:"Times New Roman"'>MUL</span></span>, <span
+class=code><span style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>DIV</span></span>
+and <span class=code><span style='font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'>SHIFTS</span></span>. While the CPU is busy with its
+internal processing, it can perform prefetch cycles for the next instruction without
+affecting the current instruction in any way.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>But the most important gain is related to concurrent
+execution. As described earlier the 68000 can decode the next opcode and fetch one
+further word, all of this concurrently with the execution of the current
+instruction. Actually, it is the concurrency that allows the bus optimization.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Let’s see what would happen without prefetch queue when
+executing, i.e., a simple <span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>NOP</span></span>:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Before anything else the <span class=code><span
+style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>NOP</span></span>
+opcode needs to be fetched. Every 68000 bus access requires a minimum of four
+machine cycles. So nothing could be done for four full cycles. Then the opcode
+needs to be decoded. This would require another two cycles. And finally the instruction
+would be executed. In this case it would be just to update the PC and would
+take another two cycles (every 68000 internal processing requires at least two
+machine cycles). Note that no step could be performed before the previous one
+is finished.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>So a <span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>NOP</span></span> would have taken 8
+cycles, twice as much as it really requires thanks to the prefetch.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h1>Prefetch subtle effects</h1>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The prefetch has some subtle effects that sometimes are not
+obvious. In first place it means that the precise time when instructions are
+fetched is affected. This might have some consequences if hardware I/O access
+is involved.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>In second place it means that code might be fetched beyond
+what is really intended. Let’s suppose you have a routine located at the very
+end of some memory space (end of RAM, end of ROM, etc). Let’s suppose i.e.,
+that this routine ends with an <span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>RTS</span></span> instruction at the
+last word of that memory block. When the CPU executes the <span class=code><span
+style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>RTS</span></span>,
+and before returning to the caller, it performed already a prefetch one word <b>beyond</b>
+the <span class=code><span style='font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'>RTS</span></span>. What exactly will happen when attempting
+a fetch outside the memory block depends on the system. Most of the time it
+will be harmless, but not always. For example, in an Atari ST with 4 MB of RAM,
+this will trigger a bus error.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>But probably the most important effect of the prefetch is on
+self-modified code …</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h1>Self modified code</h1>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The most important effect of the prefetch is self modified
+code. This is a term describing code that modifies its own instruction stream.
+This is usually done for performance reasons, or for protections and
+anti-hacking techniques.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>If the modified code is written far away enough, then the
+effect of the prefetch is not relevant. Only when code close enough to the
+current execution is written, then the exact behavior of the prefetch is
+significant.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Let’s assume the following code:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'><span style='mso-tab-count:1'>     </span>moveq
+<span style="mso-spacerun: yes">    </span>#0,D0<o:p></o:p></span></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=code><span
+style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>lea <span
+style="mso-spacerun: yes">      </span>wcode,A0<o:p></o:p></span></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=code><span
+style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>move.l<span
+style="mso-spacerun: yes">    </span>#$4E714E71,(A0)<span style="mso-spacerun:
+yes">  </span>; NOP opcodes<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>wcode:<o:p></o:p></span></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=code><span
+style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>addq<span
+style="mso-spacerun: yes">      </span>#1,D0<span style="mso-spacerun:
+yes">            </span>; written here<o:p></o:p></span></span></p>
+
+<p class=MsoNormal style='text-indent:.5in'><span class=code><span
+style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>addq<span
+style="mso-spacerun: yes">      </span>#1,D0<span style="mso-spacerun:
+yes">            </span>; and here</span></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>What is the result in <span class=code><span
+style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>D0</span></span>,
+zero, one or two? Obviously it depends on which instructions were executed, the
+“<i>old</i>” <span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>ADDQ</span></span> ones or the “<i>new</i>”
+<span class=code><span style='font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'>NOP</span></span> ones. And this in turn this depends on the
+exact behavior of the prefetch.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>We’ll return later to this example after a more detailed
+description of the prefetch queue.</p>
+
+<span style='font-size:12.0pt;font-family:"Times New Roman";mso-fareast-font-family:
+"Times New Roman";mso-ansi-language:EN-US;mso-fareast-language:EN-US;
+mso-bidi-language:AR-SA'><br clear=all style='mso-special-character:line-break;
+page-break-before:always'>
+</span>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3>Technical description of the prefetch queue</h3>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>There is a lot of misconception about the structure of the
+68000 prefetch. Probably one of the reasons is that different instructions
+produce different prefetch behaviors on self-modified code. Another reason is
+that the official literature barely covers the prefetch. And in the few places
+that it is mentioned, it is misleading.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The 68000 prefetch is <b>exactly</b> the same as the 68010
+one. The official appendix on the MC68010 Loop Mode Operation says: “… the
+MC68010/MC68012 has a two word prefetch queue in addition to a one word
+instruction decode register, …”</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The above quote is absolutely valid for the 68000 as well.
+The only difference is that the 68010 can perform a special use of the prefetch
+queue for loop mode, while the 68000 does not.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>There are three internal word registers involved in the
+prefetch: </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><!--[if gte vml 1]><v:group id="_x0000_s1043" style='position:absolute;
+ margin-left:0;margin-top:7.2pt;width:5in;height:103.2pt;z-index:1'
+ coordorigin="1800,7380" coordsize="7200,2064">
+ <v:group id="_x0000_s1044" style='position:absolute;left:1800;top:7380;
+  width:1080;height:816' coordorigin="1800,8184" coordsize="1080,816">
+  <v:shapetype id="_x0000_t202" coordsize="21600,21600" o:spt="202" path="m0,0l0,21600,21600,21600,21600,0xe">
+   <v:stroke joinstyle="miter"/>
+   <v:path gradientshapeok="t" o:connecttype="rect"/>
+  </v:shapetype><v:shape id="_x0000_s1045" type="#_x0000_t202" style='position:absolute;
+   left:1800;top:8184;width:1080;height:456'>
+   <v:textbox>
+    <![if !mso]>
+    <table cellpadding=0 cellspacing=0 width="100%">
+     <tr>
+      <td><![endif]>
+      <div>
+      <p class=MsoNormal align=center style='text-align:center'>IRC</p>
+      </div>
+      <![if !mso]></td>
+     </tr>
+    </table>
+    <![endif]></v:textbox>
+  </v:shape><v:shapetype id="_x0000_t67" coordsize="21600,21600" o:spt="67"
+   adj="16200,5400" path="m0@0l@1@0@1,0@2,0@2@0,21600@0,10800,21600xe">
+   <v:stroke joinstyle="miter"/>
+   <v:formulas>
+    <v:f eqn="val #0"/>
+    <v:f eqn="val #1"/>
+    <v:f eqn="sum height 0 #1"/>
+    <v:f eqn="sum 10800 0 #1"/>
+    <v:f eqn="sum width 0 #0"/>
+    <v:f eqn="prod @4 @3 10800"/>
+    <v:f eqn="sum width 0 @5"/>
+   </v:formulas>
+   <v:path o:connecttype="custom" o:connectlocs="10800,0;0,@0;10800,21600;21600,@0"
+    o:connectangles="270,180,90,0" textboxrect="@1,0,@2,@6"/>
+   <v:handles>
+    <v:h position="#1,#0" xrange="0,10800" yrange="0,21600"/>
+   </v:handles>
+  </v:shapetype><v:shape id="_x0000_s1046" type="#_x0000_t67" style='position:absolute;
+   left:2160;top:8640;width:360;height:360'/>
+ </v:group><v:group id="_x0000_s1047" style='position:absolute;left:1800;top:8172;
+  width:1080;height:816' coordorigin="1800,8184" coordsize="1080,816">
+  <v:shape id="_x0000_s1048" type="#_x0000_t202" style='position:absolute;
+   left:1800;top:8184;width:1080;height:456'>
+   <v:textbox>
+    <![if !mso]>
+    <table cellpadding=0 cellspacing=0 width="100%">
+     <tr>
+      <td><![endif]>
+      <div>
+      <p class=MsoNormal align=center style='text-align:center'>IR</p>
+      </div>
+      <![if !mso]></td>
+     </tr>
+    </table>
+    <![endif]></v:textbox>
+  </v:shape><v:shape id="_x0000_s1049" type="#_x0000_t67" style='position:absolute;
+   left:2160;top:8640;width:360;height:360'/>
+ </v:group><v:shape id="_x0000_s1050" type="#_x0000_t202" style='position:absolute;
+  left:1800;top:8988;width:1080;height:456'>
+  <v:textbox>
+   <![if !mso]>
+   <table cellpadding=0 cellspacing=0 width="100%">
+    <tr>
+     <td><![endif]>
+     <div>
+     <p class=MsoNormal align=center style='text-align:center'>IRD</p>
+     </div>
+     <![if !mso]></td>
+    </tr>
+   </table>
+   <![endif]></v:textbox>
+ </v:shape><v:shape id="_x0000_s1051" type="#_x0000_t202" style='position:absolute;
+  left:3780;top:7380;width:5220;height:540'>
+  <v:textbox style='mso-next-textbox:#_x0000_s1051'>
+   <![if !mso]>
+   <table cellpadding=0 cellspacing=0 width="100%">
+    <tr>
+     <td><![endif]>
+     <div>
+     <p class=MsoNormal>Holds last word prefetched from external memory.</p>
+     </div>
+     <![if !mso]></td>
+    </tr>
+   </table>
+   <![endif]></v:textbox>
+ </v:shape><v:shape id="_x0000_s1052" type="#_x0000_t202" style='position:absolute;
+  left:3780;top:8172;width:5220;height:481'>
+  <v:textbox>
+   <![if !mso]>
+   <table cellpadding=0 cellspacing=0 width="100%">
+    <tr>
+     <td><![endif]>
+     <div>
+     <p class=MsoNormal>Holds the instruction currently being decoded.</p>
+     <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+     </div>
+     <![if !mso]></td>
+    </tr>
+   </table>
+   <![endif]></v:textbox>
+ </v:shape><v:shape id="_x0000_s1053" type="#_x0000_t202" style='position:absolute;
+  left:3780;top:8975;width:5220;height:469'>
+  <v:textbox>
+   <![if !mso]>
+   <table cellpadding=0 cellspacing=0 width="100%">
+    <tr>
+     <td><![endif]>
+     <div>
+     <p class=MsoNormal>Holds the instruction currently being executed.</p>
+     <p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+     </div>
+     <![if !mso]></td>
+    </tr>
+   </table>
+   <![endif]></v:textbox>
+ </v:shape></v:group><![endif]--><![if !vml]><span style='mso-ignore:vglayout'>
+
+<table cellpadding=0 cellspacing=0 align=left>
+ <tr>
+  <td width=0 height=10></td>
+ </tr>
+ <tr>
+  <td></td>
+  <td><img width=483 height=140 src="image001.gif" v:shapes="_x0000_s1043 _x0000_s1044 _x0000_s1045 _x0000_s1046 _x0000_s1047 _x0000_s1048 _x0000_s1049 _x0000_s1050 _x0000_s1051 _x0000_s1052 _x0000_s1053"></td>
+ </tr>
+</table>
+
+</span><![endif]><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<br style='mso-ignore:vglayout' clear=ALL>
+
+<p class=MsoNormal>The IRC and IR registers are the actual prefetch queue. The
+IRD is the only register that is somehow seen externally at the programming
+model. And because of this reason the IRD register is sometimes referred simply
+as IR. You can’t access this register directly, but its content is the one that
+is stored in the exception frame on a bus or address error.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Any instruction opcode comes from external memory; traverse
+the prefetch queue, finally reaching the IRD for actual execution. Extension
+words might enter the queue at IRC but they never reach the decoder.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>When the CPU starts processing after reset, the prefetch is
+initialized with the following steps:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l16 level1 lfo27;
+tab-stops:list .5in'><![if !supportLists]>1)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Loads IRC from external memory.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l16 level1 lfo27;
+tab-stops:list .5in'><![if !supportLists]>2)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Transfer IRC to IR.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l16 level1 lfo27;
+tab-stops:list .5in'><![if !supportLists]>3)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Reload IRC from external memory.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l16 level1 lfo27;
+tab-stops:list .5in'><![if !supportLists]>4)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Transfer IR to IRD.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Normal instructions don’t perform the first step. For
+example, NOP performs the rest of the steps (step 2 to step 4). Actually all
+that NOP does is these prefetch steps plus incrementing the PC. All the
+instructions, disregarding how complex they are, perform the same prefetch
+processing (steps 2 to 4) towards the end of their execution. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>These steps are the ones that enforce the basic prefetch
+rule: just before the start of any instruction two words (no more and no less)
+are already fetched. One word will be in IRD and another one in IRC.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>For simple opcodes without extension words, the whole code
+flow simply traverses the queue as described above. The prefetch flow is more
+complicated when extension words are involved. Let’s make a brief analysis of
+the prefetch flow on complex instructions<span style="mso-spacerun: yes"> 
+</span>(opcodes with at least one extension word).</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>When a complex instruction starts, its first extension word
+is already in IRC. During the instruction processing more fetch cycles are
+performed. Unless the instruction performs a branch, the number of fetch cycles
+is always exactly the same as the total number of words for the instruction.
+This is usually done in two separate stages.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>During the first stage extra fetch cycles are performed, one
+for each extension word. Most of the extension words are processed directly by
+the instruction and not transferred to the prefetch queue. Otherwise extension
+words would reach the decoder. Only the last word fetched at this stage is
+transferred to IRC. This last word is actually not part of the current
+instruction, it is instead the opcode of the next one. Remember that one
+extension word was already fetched during the previous instruction.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The second stage is the same as in simple opcodes. Steps 2
+to 4 are performed. So the last prefetch done at the first stage reaches IRD.
+And a new word is fetched into IRC.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Let’s look at an example:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>4E71<span style="mso-spacerun:
+yes">           </span>nop<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>203C 1234 5678 move.l<span
+style='mso-tab-count:1'>   </span>#$12345678,D0<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>5280<span style="mso-spacerun:
+yes">           </span>addq.l<span style='mso-tab-count:1'>   </span>#1,D0<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>5380<span style="mso-spacerun:
+yes">           </span>subq.l<span style='mso-tab-count:1'>   </span>#1,D0<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Instruction border between the <span class=code><span
+style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>NOP</span></span>
+and the <span class=code><span style='font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'>MOVE</span></span>:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>IRC: $1234<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>IRD: $203C</span></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Stage 1 of <span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>MOVE</span></span> execution:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in'>Fetch $5678 and uses it internally
+together with $1234 already fetched.</p>
+
+<p class=MsoNormal style='margin-left:.5in'>Fetch $5280, transfer to IRC.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>IRC: $5280<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>IRD: $203C</span></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Stage 2 of <span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>MOVE</span></span> execution:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in'>Transfer IRC to IR.</p>
+
+<p class=MsoNormal style='margin-left:.5in'>Fetch $5380 into IRC.</p>
+
+<p class=MsoNormal style='margin-left:.5in'>Transfer IR to IRD.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>IRC: $5380<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>IRD: $5280<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Starts ADDQ execution.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h1>Self modified code revision</h1>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>So why some self-modified code seems to indicate that the
+prefetch queue is just one word, or even variable? Because the exact effect of
+the prefetch on self modified code depends, not only on the size of the queue,
+but also on the exact <b>order</b> of prefetch and write bus access cycles.
+Different instructions perform the prefetch cycles at different points in
+relation to the write data cycles.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The <span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>MOVE</span></span> instruction performs
+a total of 5 bus cycles. Three prefetch cycles plus two write cycles. But in
+which order? Obviously at least one prefetch cycle must be performed first to
+complete the immediate long word (the opcode and the high word of the immediate
+were already prefetched at the previous instruction). But that’s all we can
+assume. We can’t simply deduce the order of the rest of the prefetch cycles in
+relation to the write cycles. <b>Any</b> order would be correct and it wouldn’t
+really matter if it weren’t for special situations like self modified code.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>If the <span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>MOVE</span></span> instruction performs
+all the prefetch cycles <b>before</b> any write, then the “<i>old</i>” content
+of the two last instructions will be executed and the result will be <b>two</b>.
+If two prefetch cycles are performed <b>after</b> both write cycles, then the “<i>new</i>”
+<span class=code><span style='font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'>NOPs</span></span> will be executed and the result will be <b>zero</b>.
+And the writes and the last prefetch could be interleaved in such a way that
+the result will be <b>one</b>.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>So what is the real result? In this specific case the result
+will be one. But the actual behavior depends and varies on each opcode. If
+similar code is rewritten using an instruction different than <span class=code><span
+style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>MOVE</span></span>
+(say, <span class=code><span style='font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'>EOR</span></span>), then the result will be different. It
+might also be different depending on the destination addressing mode.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<h3>Prefetch Tables</h3>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>We’ll classify instructions into 3 different types depending
+on how the prefetch is affected:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><b>Class 0</b>: All prefetch cycles are performed before all
+the write cycles. Then the CPU will execute the next two following words as
+they were before the write. We can include in this category, if you want, all
+instructions that don’t write to memory. If the above example would be
+rewritten with a class 0 instruction, then the result in <span class=code><span
+style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>D0</span></span>
+would be two.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><b>Class 1</b>: The last prefeth cycle is performed after
+the write cycles. Then the current instruction can modify one word of the
+prefetch queue before it is read. That word will be two instructions ahead, or
+one extension word of the next instruction. In the above example the result in <span
+class=code><span style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>D0</span></span>
+would be one.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><b>Class 2</b>: Two prefetch cycles are performed after the
+write cycles. Then any words overwritten by the current instruction will be
+prefetched with the new modified content. In other words, the next instruction
+would execute as if no prefetch feature would exist. This category is the only
+one that can modify the actual opcode of the next instruction. In the above
+example the result in <span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>D0</span></span> would be zero.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>The names/numbers were choose because they reflect
+(figuratively) how they affect the prefetch. Class 0 instructions don’t affect
+the prefetch, class 1 ones affect one word of the prefetch, and class 2 ones
+affect both words. To be precise, the class number reflects how many words on
+the instruction stream can be modified before they are prefetched by the
+current instruction.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>So we’ll attempt below to describe the exact behavior for
+all the instructions that write to memory. We’ll show the exact bus access
+order, and then the effect of the prefetch can be easily predicted. The order
+is detailed as much as is relevant for the prefetch behavior. There are subtle
+details that are not covered in this article (for example, the order of reading
+or writing the two halves of a long word memory access).</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<span style='font-size:12.0pt;font-family:"Times New Roman";mso-fareast-font-family:
+"Times New Roman";mso-ansi-language:EN-US;mso-fareast-language:EN-US;
+mso-bidi-language:AR-SA'><br clear=all style='mso-special-character:line-break;
+page-break-before:always'>
+</span>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div style='border:none;border-top:solid windowtext .5pt;padding:1.0pt 0in 0in 0in'>
+
+<p class=MsoNormal style='border:none;mso-border-top-alt:solid windowtext .5pt;
+padding:0in;mso-padding-alt:1.0pt 0in 0in 0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal>Read modify instructions</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>We use this term to classify instructions that read a memory
+operand, modify it internally and write it back to the same memory location. It
+includes:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>ADD/SUB/OR/AND/EOR/NEG/NOT/NEGX<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span class=code><span style='mso-ascii-font-family:"Times New Roman";
+mso-hansi-font-family:"Times New Roman"'>plus</span></span><span class=code><span
+style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'> CLR </span></span><span
+class=code><span style='mso-ascii-font-family:"Times New Roman";mso-hansi-font-family:
+"Times New Roman"'>and</span></span><span class=code><span style='font-family:
+"Courier New";mso-bidi-font-family:"Times New Roman"'> MOVE from SR</span></span>.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Note that both <span class=code><span style='font-family:
+"Courier New";mso-bidi-font-family:"Times New Roman"'>CLR</span></span> and <span
+class=code><span style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>MOVE
+from SR</span></span> (which shouldn’t be read/modify instructions) are
+un-optimized in the 68000. The memory operand is read before it is written.
+Also don’t confuse read/modify instructions with read/modify cycles as
+performed by the <span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>TAS</span></span> instruction.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Exact bus access execution order:</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l24 level1 lfo2;
+tab-stops:list .5in'><![if !supportLists]>1)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Perform as many prefetch cycles as extension words are in the
+memory addressing mode. Obviouslly optional if there are none.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l24 level1 lfo2;
+tab-stops:list .5in'><![if !supportLists]>2)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Read memory operand. One bus cycle if byte or word operand,
+two if long.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l24 level1 lfo2;
+tab-stops:list .5in'><![if !supportLists]>3)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Peform the last prefetch cycle. Concurrently the logical/arithmetic
+operation is done internally.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l24 level1 lfo2;
+tab-stops:list .5in'><![if !supportLists]>4)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Write bus cycle(s).</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>So the net effect is these instructions are of class 0.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div style='border:none;border-top:solid windowtext .5pt;padding:1.0pt 0in 0in 0in'>
+
+<p class=MsoNormal style='border:none;mso-border-top-alt:solid windowtext .5pt;
+padding:0in;mso-padding-alt:1.0pt 0in 0in 0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>MOVE</span></span> instructions. Most
+variants, except the ones noted below</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l18 level1 lfo4;
+tab-stops:list .5in'><![if !supportLists]>1)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Perform as many prefetch cycles as extension words are in the
+source operand (optional).</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l18 level1 lfo4;
+tab-stops:list .5in'><![if !supportLists]>2)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Read source operand (optional if source is register).</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l18 level1 lfo4;
+tab-stops:list .5in'><![if !supportLists]>3)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Perform as many prefetch cycles as extension words are in the
+destination operand (optional).</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l18 level1 lfo4;
+tab-stops:list .5in'><![if !supportLists]>4)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Writes memory operand.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l18 level1 lfo4;
+tab-stops:list .5in'><![if !supportLists]>5)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Perform last prefetch cycle.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Net effect is that <span class=code><span style='font-family:
+"Courier New";mso-bidi-font-family:"Times New Roman"'>MOVE</span></span>
+instructions are of class 1.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div style='border:none;border-top:solid windowtext .5pt;padding:1.0pt 0in 0in 0in'>
+
+<p class=MsoNormal style='border:none;mso-border-top-alt:solid windowtext .5pt;
+padding:0in;mso-padding-alt:1.0pt 0in 0in 0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>MOVE &lt;ea&gt;,-(An)<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>When the destination addressing mode is pre-decrement, steps
+4 and 5 above are inverted. So it behaves like a read modify instruction and it
+is a class 0 instruction.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Note: The behavior is the same disregarding transfer size
+(byte, word or long), and disregarding the source addressing mode.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div style='border:none;border-top:solid windowtext .5pt;padding:1.0pt 0in 0in 0in'>
+
+<p class=MsoNormal style='border:none;mso-border-top-alt:solid windowtext .5pt;
+padding:0in;mso-padding-alt:1.0pt 0in 0in 0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>MOVE memory,(xxx).L<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>When the destination addressing mode is long absolute <b>and</b>
+the source operand is any <b>memory</b> addr.mode, step 4 is interleaved in the
+middle of step 3. Step 3 only performs a single prefetch in this case. The
+other prefetch cycle that is normally performed at that step is deferred after
+the write cycles.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>So, two prefetch cycles are performed after the write ones.
+It is a class 2 instruction.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Note: The behavior is the same disregarding transfer size
+(byte, word or long). But if the source operand is a data or address register,
+or immediate, then the behavior is the same as other <span class=code><span
+style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>MOVE</span></span>
+variants (class 1 instruction).</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div style='border:none;border-top:solid windowtext .5pt;padding:1.0pt 0in 0in 0in'>
+
+<p class=MsoNormal style='border:none;mso-border-top-alt:solid windowtext .5pt;
+padding:0in;mso-padding-alt:1.0pt 0in 0in 0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>EXCEPTIONS<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>All exceptions, including <span class=code><span
+style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>interrupts</span></span>,
+<span class=code><span style='font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman"'>bus </span></span><span class=code><span style='mso-ascii-font-family:
+"Times New Roman";mso-hansi-font-family:"Times New Roman"'>and</span></span><span
+class=code><span style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>
+address errors, traps</span></span>, etc. We don’t discuss here the whole
+process of writing the exception frame, which is very interesting and will be
+elaborated in another article. We only cover here the prefetch effect on
+exceptions</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>As it might seem natural, the prefetch is reloaded at the
+end of the exception processing. At that point the whole exception frame was
+already written. So if the supervisor stack pointer is pointing to the
+exception handler, two words of the prefetch are affected.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Furthermore, the exception frame is wholly written before
+the vector itself is fetched. So if the <span class=code><span
+style='font-family:"Courier New";mso-bidi-font-family:"Times New Roman"'>SSP</span></span>
+is pointing at the exception table, it might overwrite the exception vector
+itself before it is being fetched.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l21 level1 lfo6;
+tab-stops:list .5in'><![if !supportLists]>1)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Write exception frame (detailed in another article)</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l21 level1 lfo6;
+tab-stops:list .5in'><![if !supportLists]>2)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Fetch exception vector</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l21 level1 lfo6;
+tab-stops:list .5in'><![if !supportLists]>3)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Perform two prefetch cycles.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>So it is a class 2+ behavior. </p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div style='border:none;border-top:solid windowtext .5pt;padding:1.0pt 0in 0in 0in'>
+
+<p class=MsoNormal style='border:none;mso-border-top-alt:solid windowtext .5pt;
+padding:0in;mso-padding-alt:1.0pt 0in 0in 0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>BSR<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l13 level1 lfo8;
+tab-stops:list .5in'><![if !supportLists]>1)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Stack is written</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l13 level1 lfo8;
+tab-stops:list .5in'><![if !supportLists]>2)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Two prefetch cycles are performed.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Class 2 instruction.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div style='border:none;border-top:solid windowtext .5pt;padding:1.0pt 0in 0in 0in'>
+
+<p class=MsoNormal style='border:none;mso-border-top-alt:solid windowtext .5pt;
+padding:0in;mso-padding-alt:1.0pt 0in 0in 0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>JSR<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l15 level1 lfo10;
+tab-stops:list .5in'><![if !supportLists]>1)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>When addr. mode is absolute long, prefetch the last word of
+the absolute address. Step not needed for other modes.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l15 level1 lfo10;
+tab-stops:list .5in'><![if !supportLists]>2)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Perform one prefetch cycle</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l15 level1 lfo10;
+tab-stops:list .5in'><![if !supportLists]>3)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Write stack</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l15 level1 lfo10;
+tab-stops:list .5in'><![if !supportLists]>4)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Perform last prefetch cycle.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Class 1 instruction.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div style='border:none;border-top:solid windowtext .5pt;padding:1.0pt 0in 0in 0in'>
+
+<p class=MsoNormal style='border:none;mso-border-top-alt:solid windowtext .5pt;
+padding:0in;mso-padding-alt:1.0pt 0in 0in 0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>PEA</span></span> for absolute short
+and absolute long addr. modes.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l1 level1 lfo12;
+tab-stops:list .5in'><![if !supportLists]>1)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>One (absolute short) or two (absolute long) prefetch cycles.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l1 level1 lfo12;
+tab-stops:list .5in'><![if !supportLists]>2)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Write cycles.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l1 level1 lfo12;
+tab-stops:list .5in'><![if !supportLists]>3)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Last prefetch cycle.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Class 1 instruction.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div style='border:none;border-top:solid windowtext .5pt;padding:1.0pt 0in 0in 0in'>
+
+<p class=MsoNormal style='border:none;mso-border-top-alt:solid windowtext .5pt;
+padding:0in;mso-padding-alt:1.0pt 0in 0in 0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>PEA</span></span>, rest addr. modes.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l17 level1 lfo14;
+tab-stops:list .5in'><![if !supportLists]>1)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Perform prefetch cycles according to addr. mode.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l17 level1 lfo14;
+tab-stops:list .5in'><![if !supportLists]>2)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Perform last prefetch cycle.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l17 level1 lfo14;
+tab-stops:list .5in'><![if !supportLists]>3)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Write cycles.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Class 0 instruction.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div style='border:none;border-top:solid windowtext .5pt;padding:1.0pt 0in 0in 0in'>
+
+<p class=MsoNormal style='border:none;mso-border-top-alt:solid windowtext .5pt;
+padding:0in;mso-padding-alt:1.0pt 0in 0in 0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>LINK<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l11 level1 lfo16;
+tab-stops:list .5in'><![if !supportLists]>1)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>One prefetch cycle</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l11 level1 lfo16;
+tab-stops:list .5in'><![if !supportLists]>2)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Write cycles</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l11 level1 lfo16;
+tab-stops:list .5in'><![if !supportLists]>3)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>One prefetch cycle</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Class 1 instruction.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div style='border:none;border-top:solid windowtext .5pt;padding:1.0pt 0in 0in 0in'>
+
+<p class=MsoNormal style='border:none;mso-border-top-alt:solid windowtext .5pt;
+padding:0in;mso-padding-alt:1.0pt 0in 0in 0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>BCHG/BCLR/BSET<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>ASL/ASR/LSL/LSR/ROL/ROR/ROXL/ROXR<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>TAS<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l20 level1 lfo18;
+tab-stops:list .5in'><![if !supportLists]>1)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Prefetch cycles, as many as extension words.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l20 level1 lfo18;
+tab-stops:list .5in'><![if !supportLists]>2)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Read operand.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l20 level1 lfo18;
+tab-stops:list .5in'><![if !supportLists]>3)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Last prefetch cycle.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l20 level1 lfo18;
+tab-stops:list .5in'><![if !supportLists]>4)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Write operand.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Class 0 instruction.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div style='border:none;border-top:solid windowtext .5pt;padding:1.0pt 0in 0in 0in'>
+
+<p class=MsoNormal style='border:none;mso-border-top-alt:solid windowtext .5pt;
+padding:0in;mso-padding-alt:1.0pt 0in 0in 0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>Scc<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l0 level1 lfo20;
+tab-stops:list .5in'><![if !supportLists]>1)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Prefetch cycles, as many as extension words.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l0 level1 lfo20;
+tab-stops:list .5in'><![if !supportLists]>2)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Last prefetch cycle.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l0 level1 lfo20;
+tab-stops:list .5in'><![if !supportLists]>3)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Write operand.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Class 0 instruction.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div style='border:none;border-top:solid windowtext .5pt;padding:1.0pt 0in 0in 0in'>
+
+<p class=MsoNormal style='border:none;mso-border-top-alt:solid windowtext .5pt;
+padding:0in;mso-padding-alt:1.0pt 0in 0in 0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>ADDX,SUBX<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>ABCD,SBCD</span></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l3 level1 lfo22;
+tab-stops:list .5in'><![if !supportLists]>1)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Read source operand.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l3 level1 lfo22;
+tab-stops:list .5in'><![if !supportLists]>2)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Read destination operand.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l3 level1 lfo22;
+tab-stops:list .5in'><![if !supportLists]>3)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Prefetch cycle.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l3 level1 lfo22;
+tab-stops:list .5in'><![if !supportLists]>4)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Write operand.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Class 0 instruction.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div style='border:none;border-top:solid windowtext .5pt;padding:1.0pt 0in 0in 0in'>
+
+<p class=MsoNormal style='border:none;mso-border-top-alt:solid windowtext .5pt;
+padding:0in;mso-padding-alt:1.0pt 0in 0in 0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>MOVEP<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l23 level1 lfo24;
+tab-stops:list .5in'><![if !supportLists]>1)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>One prefetch cycle for the extension word</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l23 level1 lfo24;
+tab-stops:list .5in'><![if !supportLists]>2)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Write operand</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l23 level1 lfo24;
+tab-stops:list .5in'><![if !supportLists]>3)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Last prefetch cycle</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Class 1 instruction.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<div style='border:none;border-top:solid windowtext .5pt;padding:1.0pt 0in 0in 0in'>
+
+<p class=MsoNormal style='border:none;mso-border-top-alt:solid windowtext .5pt;
+padding:0in;mso-padding-alt:1.0pt 0in 0in 0in'><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><span class=code><span style='font-family:"Courier New";
+mso-bidi-font-family:"Times New Roman"'>MOVEM<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l10 level1 lfo26;
+tab-stops:list .5in'><![if !supportLists]>1)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Prefetch cycles, as many as extension words.</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l10 level1 lfo26;
+tab-stops:list .5in'><![if !supportLists]>2)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Write registers to memory</p>
+
+<p class=MsoNormal style='margin-left:.5in;text-indent:-.25in;mso-list:l10 level1 lfo26;
+tab-stops:list .5in'><![if !supportLists]>3)<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><![endif]>Perform last prefetch</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal>Class 1 instruction.</p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+<p class=MsoNormal><![if !supportEmptyParas]>&nbsp;<![endif]><o:p></o:p></p>
+
+</div>
+
+</body>
+
+</html>
+<!-- text below generated by server. PLEASE REMOVE --><!-- Counter/Statistics data collection code --><script language="JavaScript" src="http://l.yimg.com/d/lib/smb/js/hosting/cp/js_source/whv2_001.js"></script><script language="javascript">geovisit();</script><noscript><img src="http://visit.webhosting.yahoo.com/visit.gif?us1480258369" alt="setstats" border="0" width="1" height="1"></noscript><script type="text/javascript">(function (d, w) {var x = d.getElementsByTagName('SCRIPT')[0];var f = function () {var s = d.createElement('SCRIPT');s.type = 'text/javascript';s.async = true;s.src = "//np.lexity.com/embed/YW/8106bf08abc7b45b6fe83264dbf75216?id=881996158307";x.parentNode.insertBefore(s, x);};w.attachEvent ? w.attachEvent('onload',f) :w.addEventListener('load',f,false);}(document, window));</script>
