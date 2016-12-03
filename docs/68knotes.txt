@@ -1,0 +1,272 @@
+
+
+                -------------------------------------------
+                     68000 Undocumented Behavior Notes
+                              Fourth Edition
+                    by Bart Trzynadlowski, May 12, 2003
+                -------------------------------------------
+
+
+---------
+  About
+---------
+
+The purpose of this document is to explain the workings of "undocumented"
+features of Motorola's 68000 processor. Any information which you can
+contribute would be much appreciated!
+
+Much of my testing was conducted on the MC68EC000 processor found inside the
+Sega Saturn. I used sat68kdb (http://www.trzy.org/saturn), a debugger written
+specifically to allow step-by-step execution of code on the MC68EC000. I also
+have had some of my results tested on an original Sega Genesis. This does not
+mean, however, that this document is error-free. If you spot any, let me know!
+
+I'd be interested in hearing whether other models of the 68000 exhibit the
+same behavior as it is described here. 
+
+Thanks to the following people:
+
+    - James Ponder; for pointing out that the BCD adjustment algorithm is not
+      the same as on X86 and suggesting more BCD tests with the X flag set
+    - James Forshaw; for help with Saturn coding
+    - Charles MacDonald; for running my test programs on a real Genesis
+    - Steve Snake; for figuring out how pre-decremented addressing modes work
+      with long-word writes on the 68000
+
+My contact details:
+
+    Bart Trzynadlowski
+    Email:  trzynadl@unr.nevada.edu
+    WWW:    http://www.trzy.org
+
+NOTE: Please be considerate and give credit to me (or the appropriate
+contributor) if you make use of any of the information here.
+
+Change History:
+
+    Fourth Edition: May 12, 2003:
+        - Added information on the BCD adjustment algorithm and included more
+          test results (thanks to James Ponder)
+
+    Third Edition: February 22, 2002
+        - Fixed a typo in the data bus information (thanks to M. Beaver)
+
+    Second Edition: February 18, 2002
+        - Added information on the 16-bit data bus
+
+    First Edition: June 27, 2001
+        - Initial release
+
+
+---------------------------------------------------
+  ABCD, SBCD, and NBCD Undocumented Flag Behavior
+---------------------------------------------------
+
+The N and V flags for ABCD, SBCD, and NBCD are described as "undocumented" by
+Motorola's official programming manuals.
+
+The N flag is set if the MSB (most significant bit) of the result is 1 and
+cleared if it is 0.
+
+ABCD's V flag is trickier. Let us refer to the non-BCD result of the added
+operands as the "unadjusted result", and to the BCD-adjusted result as the
+"adjusted result." When the MSB of the unadjusted result is 0, and becomes 1
+in the adjusted result, the V flag is set. Otherwise (if it goes from 1 to 0,
+1 to 1, or 0 to 0), it is cleared.
+
+Here are some examples:
+
+    Dest + Src          Unadjusted Result   Adjusted Result     V Flag
+    ------------------------------------------------------------------
+    40 + 40, X = 0      80                  80                  0
+    40 + 40, X = 1      81                  81                  0
+    40 + 41, X = 0      81                  81                  0
+    40 + 41, X = 1      82                  82                  0
+    40 + 3F, X = 0      7F                  85                  1
+    40 + 3F, X = 1      80                  86                  0
+    40 + 3A, X = 0      7A                  80                  1
+    40 + 3A, X = 1      7B                  81                  1
+    70 + 10, X = 0      80                  80                  0
+    70 + 10, X = 1      81                  81                  0
+    78 + 02, X = 0      7A                  80                  1
+    78 + 02, X = 1      7B                  81                  1
+    0A + 70, X = 0      7A                  80                  1
+    0A + 70, X = 1      7B                  81                  1
+    99 + 01, X = 0      9A                  00                  0
+    99 + 01, X = 1      9B                  01                  0
+    0F + 01, X = 0      10                  16                  0
+    0F + 01, X = 1      11                  17                  0
+    F0 + 10, X = 0      00                  60                  0
+    F0 + 10, X = 1      01                  61                  0
+    10 + FF, X = 0      0F                  75                  0
+    10 + FF, X = 1      10                  76                  0
+    79 + 06, X = 0      7F                  85                  1
+    79 + 06, X = 1      80                  86                  0
+    7E + 01, X = 0      7F                  85                  1
+    7E + 01, X = 1      80                  86                  0
+    
+I realize some of the operands were not valid BCD numbers. The table helps
+illustrate how the V flag works. Notice how the change of the MSB from 0 to 1
+causes the V flag to be set.
+
+For SBCD and NBCD, the behavior is almost the same, except that the V flag is
+set if the MSB changes from 1 to 0. Otherwise (if it goes from 0 to 1, 1 to 1,
+or 0 to 0) is is cleared. Some examples are shown below.
+
+SBCD:
+
+    Dest - Src          Unadjusted Result   Adjusted Result     V Flag
+    ------------------------------------------------------------------
+    67 - 91, X = 0      D6                  76                  1
+    67 - 91, X = 1      D5                  75                  1
+    67 - F1, X = 0      76                  16                  0
+    67 - F1, X = 1      75                  15                  0
+    90 - 0F, X = 0      81                  7B                  1
+    90 - 0F, X = 1      80                  7A                  1
+    0F - 10, X = 0      FF                  9F                  0
+    0F - 10, X = 1      FE                  9E                  0
+    0F - A0, X = 0      6F                  0F                  0
+    0F - A0, X = 1      6E                  0E                  0
+    0F - 01, X = 0      0E                  0E                  0
+    0F - 01, X = 1      0D                  0D                  0
+    F0 - 10, X = 0      E0                  E0                  0
+    F0 - 10, X = 1      DF                  D9                  0
+    10 - FF, X = 0      11                  AB                  0
+    10 - FF, X = 1      10                  AA                  0
+    81 - 01, X = 0      80                  80                  0
+    81 - 01, X = 1      7F                  79                  0
+
+NBCD:
+
+    Operand             Unadjusted Result   Adjusted Result     V Flag
+    ------------------------------------------------------------------
+    00, X = 0           00                  00                  0
+    00, X = 1           FF                  99                  0
+    FF, X = 0           01                  9B                  0
+    FF, X = 1           00                  9A                  0
+    01, X = 0           FF                  99                  0
+    01, X = 1           FE                  98                  0
+    0F, X = 0           F1                  8B                  0
+    0F, X = 1           F0                  8A                  0
+    F0, X = 0           10                  B0                  0
+    F0, X = 1           0F                  A9                  0
+    9A, X = 0           66                  00                  0
+    9A, X = 1           65                  FF                  0
+    99, X = 0           67                  01                  0
+    99, X = 1           66                  00                  0
+    10, X = 0           F0                  90                  0
+    10, X = 1           EF                  89                  0
+    7F, X = 0           81                  1B                  1
+    7F, X = 1           80                  1A                  1
+    80, X = 0           80                  20                  1
+    80, X = 1           7F                  19                  0
+    81, X = 0           7F                  19                  0
+    81, X = 1           7E                  18                  0
+
+The BCD adjustment algorithms for addition on the X86 and 68K seem to yield
+the same results (I haven't completely verified this.) For subtraction,
+however, Intel's algorithm always guarantees a BCD result whereas Motorola's
+does not.
+
+The Motorola BCD addition algorithm for ABCD appears to be:
+
+    1. Add the 2 sources together with the X flag (1 or 0) and obtain the
+       non-BCD (unadjusted) result.
+    2. If low nibble is greater than 9 or a carry occured out of bit 3, add 6
+       to the result.
+    3. If the result is now greater than 0x90, add 0x60 to the result and
+       set the carry and X flags to 1. Otherwise, add nothing and clear the
+       carry and X flags. The result has now been adjusted for BCD and all
+       further steps refer to this BCD number.
+    4. If the result is not 0, clear the Z flag, otherwise leave it unchanged.
+    5. If the result is negative (bit 7 is 1), set the N flag; otherwise,
+       clear it.
+    6. The V flag is set if bit 7 of the unadjusted result obtained in step 1
+       is 0 and bit 7 in the BCD result is 1. Otherwise, the flag is cleared.
+
+The BCD subtraction algorithm for SBCD and NBCD is:
+
+    1. In this description, subtraction takes the form of: A - B - X. For
+       SBCD, A is the destination operand and B is the source. For NBCD, A is
+       0 and B is the single operand. X, of course, is the X flag (1 or 0.)
+       The subtraction is performed and an unadjusted result is obtained.
+    2. If the low nibble of B added to the X flag (1 or 0) is greater than
+       the low nibble of A, 6 is subtracted from the result. Note that adding
+       the X flag to the low nibble of B may result in a 5 bit value (which
+       would always be greater than the low nibble of A.)
+    3. If the result is now negative (determined by bit 7 since this is a byte
+       operation), subtract 0x60 from the result and set the carry and X flags
+       to 1. Otherwise, subtract nothing and clear the carry and X flags. The
+       result has now been adjusted for BCD and all further steps refer to
+       this BCD number.
+    4. If the result is not 0, clear the Z flag, otherwise leave it unchanged.
+    5. If the result is negative (bit 7 is 1), set the N flag; otherwise,
+       clear it.
+    7. The V flag is set if bit 7 of the unadjusted result obtained in step 1
+       is 1 and bit 7 of the BCD result is 0. Otherwise, the flag is cleared.
+
+
+----------------------------------
+  CHK Undocumented Flag Behavior
+----------------------------------
+
+The Z, V, and C flags are undocumented for the CHK instruction.
+
+The Z flag is set if the register operand (the second operand; not the
+effective address operand) is 0. Otherwise, it is cleared. With the 68000,
+only word-sized operands are allowed, so only the lower word matters when
+checking for the Z condition.
+
+The V and C flags are always cleared. In my tests, I have never been able to
+set either of them. Confirmation on whether or not I am correct would be nice.
+
+CHK undocumented flag calculation is not affected by whether or not a CHK
+exception occurs; the flags are calculated before the exception occurs.
+
+
+------------------------------------------
+  Long-Word Writes and 16-Bit Data Buses
+------------------------------------------
+
+The 68000 has a 16-bit data bus and consequently, 32-bit accesses are broken
+down into 2 consecutive 16-bit accesses.
+
+When writing a long-word (with MOVE.L) with a pre-decrementing destination
+address mode, the following occurs:
+
+    - Destination address register is decremented by 2
+    - Low word of data is written to the address
+    - Destination address register is decremented by 2
+    - High word of data is written to the address
+
+    ( Thanks to Steve Snake for figuring this out. The Sega Genesis game
+      "Jim Power" relies on this behavior. )
+
+Consider the following code as an example:
+
+    lea     0xc00004, a0
+    move.l  #0x12345678, -(a0)
+
+The address, 0xC00004, is loaded into A0. The MOVE.L instruction then does
+this:
+
+    - Subtract 2 from the destination address (0xC00004 - 2 = 0xC00002)
+    - Write 0x5678 to 0xC00002
+    - Subtract 2 from the destination address (0xC00002 - 2 = 0xC00000)
+    - Write 0x1234 to 0xC00000
+
+Note that this backwards writing behavior only seems to happen with the MOVE.L
+instruction when the destination address mode is pre-decremented. It does not
+happen when the source address is pre-decremented. Also, the few arithmetic
+instructions that were tested did not exhibit this behavior, either. CLR was
+not tested, but I assume it does not behave like MOVE.L because of the dummy
+read it performs.
+
+The other long word addressing modes work as expected:
+
+    - High word of data is written to address
+    - Low word of data is written to (address + 2)
+
+These subtleties can be crucial when dealing with memory-mapped hardware.
+
+If you have any more information on this topic, do not hesitate to email me!
