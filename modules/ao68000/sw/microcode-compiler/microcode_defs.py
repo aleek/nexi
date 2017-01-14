@@ -1,21 +1,24 @@
 from enum import Enum
 
-#class M68kMicrocodeInstruction:
-#        ea_reg = 0
-#        ea_mod = 0
-#        ea_type = 0
-#        op1 = 0
-#        op2 = 0
+class M68kMicrocodeInstruction:
+    external = False
+    label = ''
+    functions = {}
+
+    def push( function, param):
+        if function in functions:
+            return 0
+        functions[function] = m68k_defs[function]
 
 
-m68k_language_defines = {
+m68k_defs = {
 'EA_REG' : {
     'IDLE'                   : 0,
     'IR_2_0'                 : 1,
     'IR_11_9'                : 2,
     'MOVEM_REG_2_0'          : 3,
-    '3B111'                  : 4,
-    '3B000'                  : 5,
+    'STACKPTR'               : 4,    # stack pointer, 3'b111
+    'IMM'                    : 5,    # immediate, valid if EA_MOD_EXTENDED
 },
 
 'EA_MOD' : {
@@ -23,8 +26,8 @@ m68k_language_defines = {
     'IR_5_3'                 : 1,
     'MOVEM_MOD_5_3'          : 2,
     'IR_8_6'                 : 3,
-    'PREDEC'                 : 4,    # predecrement:    -(An)
-    '3b111'                  : 5,    # extended mod
+    'PREDEC'                 : 4,    # predecrement:  -(An)
+    'EXTENDED'               : 5,    # extended:      immediate or PC or ABS
     'DN_PREDEC'              : 6,    # MOD.DN_PREDEC: Dn 3'b000 (ir[3] == 1'b0), -(An) 3'b100 (ir[3] == 1'b1)
     'DN_AN_EXG'              : 7,    # MOD.DN_AN_EXG: Dn 3'b000 (ir[7:3] == 5'b01000 or 5'b10001), An 3'b001 (ir[7:3] == 5'b01001)
     'POSTINC'                : 8,    # MOD.POSTINC: postincrement (An)+ 3'b011
@@ -32,6 +35,26 @@ m68k_language_defines = {
     'DN'                     : 10,   # MOD.DN: Dn 3'b000
     'INDIRECTOFFSET'         : 11,   # MOD.INDIRECTOFFSET: (d16, An) 3'b101
 },
+
+# EA types
+#
+# The MC68000 addressing modes are grouped into four classes depending on
+# the type of operand involved.
+#
+# Data mode:       include those which refer to data operands,
+#                  as opposed to address operands
+#
+# Memory modes:    refer to operands that are found in memory,
+#                  as opposed to those found in registers.
+#
+# Alterable modes: are those reffering to operands that may be modified
+#                  or written over during the execution of a program.
+#
+# Control modes:   refer to operands that are addresses used in program
+#                  control (targets for subroutine calls, or branches)
+#
+# =============================
+# Source: http://www.electronics.dit.ie/staff/ypanarin/Lecture%20Notes/K235-1/07%2068000%20Instruction%20Set.pdf
 
 'EA_TYPE' : {
     'IDLE'                   : 0,
@@ -173,7 +196,7 @@ m68k_language_defines = {
     'COPY_WHEN_NO_STOP'      : 1,    # remember trace bit, move from sr[15]
 },
 
-'GROUP0_FLAG' : {
+'GROUP_0_FLAG' : {
     'IDLE'                   : 0,
     'SET'                    : 1,    # set, processing group zero exception
     'CLEAR_WHEN_VALID_PREFETCH' : 2,    # clear

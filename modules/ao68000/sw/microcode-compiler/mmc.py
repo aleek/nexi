@@ -3,15 +3,18 @@
 import argparse
 import sys
 import re
+import microcode_defs as m_defs
 from enum import Enum
 
 class FSMState(Enum):
-    RECOGNIZE   = 0
-    INSTR       = 1
-    ENDINSTR    = 2
-    COMMENT     = 3
-    EXTERNAL    = 4
-    LABEL       = 5
+    RECOGNIZE     = 0
+    INSTR         = 1
+    INSTR_CONTENT = 2
+    COMMENT       = 3
+    EXTERNAL      = 4
+    LABEL         = 5
+
+
 
 class Mmc(object):
     inputfile = ''
@@ -19,6 +22,7 @@ class Mmc(object):
     defs=''
     cpu=''
     tokens = []
+    intermediate_form = []
     
     def __init__(self, inputfile, outputfile, defs, cpu):
         self.inputfile = inputfile
@@ -39,8 +43,14 @@ class Mmc(object):
         state.insert(0, FSMState.RECOGNIZE)
         while(True):
             token = token_iter.next()
-            print "state: " + str(state[0]) + " next token: " + token
+            if token == "\n":
+                printable_token = "NEWL"
+            else:
+                printable_token = token
+            print "state: " + str(state[0]) + " next token: " + printable_token
             if state[0] == FSMState.RECOGNIZE:
+                if token == "#ifdef":
+                    state.insert(0, FSMState.IFDEF)
                 if token.startswith('#') or token.startswith("//"):
                     state.insert(0, FSMState.COMMENT)
                 elif token == "instr":
@@ -50,11 +60,11 @@ class Mmc(object):
                     state.insert(0, FSMState.EXTERNAL)
                 elif re.match('^[a-zA-Z0-9_-]+:', token) is not None:
                     label = token[0:-1]
-                    state.insert(0, FSMState.LABEL)
+                    #state.insert(0, FSMState.LABEL)
                 elif token == "\n":
                     continue
                 else:
-                    raise Exception("Unexpected token")
+                    raise Exception("Syntax Error: unexpected token: " + token)
 
             elif state[0] == FSMState.EXTERNAL:
                 if token.startswith('#') or token.startswith("//"):
@@ -74,7 +84,7 @@ class Mmc(object):
                     external = True
                     state.insert(0, FSMState.EXTERNAL)
                 elif token == "\n":
-                    continue
+                    state.pop(0)
                 elif token == "instr":
                     state.pop(0) # we dont need to bother with this, we have external var set to True
                     state.insert(0, FSMState.INSTR)
@@ -82,29 +92,45 @@ class Mmc(object):
                     raise Exception( "Syntax error: label " + token)
 
             elif state[0] == FSMState.INSTR:
+                if token == "\n":
+                    instr_oneliner = False
+                else:
+                    instr_oneliner = True
+                state.pop(0)
+                state.insert(0, FSMState.INSTR_CONTENT)
+
+            elif state[0] == FSMState.INSTR_CONTENT:
                 if token.startswith('#') or token.startswith("//"):
-                    if instr_oneliner == None:
-                        instr_oneliner = False
                     state.insert(0, FSMState.COMMENT)
-                elif token == "\n":
-                    if instr_oneliner == None:
-                        instr_oneliner = False
-                    elif instr_oneliner == True:
-                        state.pop(0)
-                elif token == "endinstr":
+                elif token == "\n" and instr_oneliner == True:
+                    instr_oneliner = None
+                    label = ''
+                    external = False
                     state.pop(0)
-                elif token.startswith('EA_REG'):
-                    pass
-                elif token.startswith('EA_MOD'):
-                    pass
+                elif token == "endinstr" and instr_oneliner == False:
+                    state.pop(0)
+                elif re.match("[A-Z0-9_]+ *\( *[A-Z0-9_]+ *\)", token) is not None:
+                    code = re.findall("[A-Z0-9_]+", token)
+                    if code[0] not in m_defs.m68k_defs:
+                        print "Unrecognized token: " + code[0]
+                        exit(1)
+                    if code[1] not in m_defs.m68k_defs[code[0]]:
+                        print "Unrecognized token: " + code[0]
+                        exit(1)
+                    print "Got tokens: " + code[0] + " " + code[1]
+                    push_token( code[0], code[1], label, external) 
+                    
+
                 else:
                     print "Unrecognized token: " + token
+                    exit(1)
 
             elif state[0] == FSMState.COMMENT:
                 if token == "\n":
                     state.pop(0)
                     
-
+    def push_token(function, param, label, external):
+        
     def parse_input_file(self):
         content = self.inputfile.readlines()
         # Replace \n with ' __EOL__ ' so we can detect newline

@@ -86,12 +86,8 @@ instr
 endinstr
 
 // stack SR
-instr
-	SIZE_WORD
-	EA_REG_3b111
-	EA_MOD_PREDEC
-	EA_TYPE_ALL
-endinstr
+// calculate effective address of SP, and decrement by size
+instr SIZE_WORD EA_MOD_PREDEC EA_REG_STACKPTR EA_TYPE_ALL
 
 instr
 	BRANCH_procedure
