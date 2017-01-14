@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<!-- saved from url=(0063)http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323003.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+
+<meta name="GENERATOR" content="hevea 1.09">
+<link rel="stylesheet" type="text/css" href="./Microprogramming_files/0708.cs-323.css">
+<title>Microprogramming</title>
+</head>
+<body data-feedly-mini="yes">
+<a href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323002.html"><img src="./Microprogramming_files/previous_motif.gif" alt="Previous"></a>
+<a href="http://euler.mat.uson.mx/~havillam/ca/CS323/index.html"><img src="./Microprogramming_files/contents_motif.gif" alt="Up"></a>
+<a href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323004.html"><img src="./Microprogramming_files/next_motif.gif" alt="Next"></a>
+<hr>
+<h1 class="chapter"><a name="htoc6">Chapter&nbsp;1</a>&nbsp;&nbsp;Microprogramming</h1><p>
+<a name="chap:microprogramming"></a></p><h2 class="section"><a name="toc5"></a><a name="htoc7">1.1</a>&nbsp;&nbsp;Introduction</h2><p>We will start this module with a quick look back at some earlier
+implementation techniques. This is partly to set the scene, and
+partly to explain the background of some later developments (which
+were initially controversial).</p><p>The control parts of computers prior to the mid 60s were constructed,
+essentially, of electronic components structured into logic gates. It
+was quickly discovered that building computers, especially the
+<i>control logic</i>, was complex and error-prone — hence
+techniques were developed to further structure systems and reduce
+errors. Nevertheless, it was still difficult and complex, and errors
+were hard to fix.</p><p>In 1957 Maurice Wilkes<sup><a name="text2" href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323003.html#note2">1</a></sup>
+proposed an alternative called `microprogramming'. At the time, it
+was highly impractical, but in 1964 IBM launched its 360 range, most
+of which used this microprogramming concept. Only the top of the
+range machine was not microprogrammed, because microprogramming could
+not deliver the required performance (traditional methods, for all
+their faults, were fast). The 360 series were highly significant
+machines in the 60s, and their influence on machine architicture
+design is still visible today, particularly in Intel 80x86 and
+Motorola 680x0 processors, whose instruction sets are essentially
+evolutions of the 360 original. In fact, IBM still produces
+mainframes today that use the same architecture.</p><p>Wilkes' idea was that each machine instruction was divided into a
+number of sub-instructions, or <i>microinstructions</i>. While
+a real instruction (we might say <i>macroinstruction</i>) might
+be something like `add the contents of registers <tt>A</tt> and
+<tt>B</tt>', a microinstruction might be something like `write
+out register <tt>A</tt> to bus <tt>Z</tt>', or `read data bus into
+register <tt>X</tt>' — very basic actions that could be assembled to
+implement the actual instruction set of the machine. The set of
+microinstructions that made up a full instruction set was called the
+<i>microprogram</i>, or <i>microcode</i>.</p><h2 class="section"><a name="toc6"></a><a name="htoc8">1.2</a>&nbsp;&nbsp;How it Works</h2><p>The precise details of Wilkes' design are not important to us, but we
+note the following:</p><ul class="itemize"><li class="li-itemize">It was based on a memory consisting of a network of diodes.</li><li class="li-itemize">It was far too expensive at the time it was suggested, because
+of the size of the diode array required.</li><li class="li-itemize">The arrival of cheap<sup><a name="text3" href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323003.html#note3">2</a></sup> <i>ferrite core</i> memory, and then
+semi-conductor memory, changed this and made the idea viable.</li><li class="li-itemize">Even so, unfortunately, the scheme as proposed by Wilkes would
+not work for technical reasons, and had to be modified
+slightly…</li></ul><p>The idea is that each microinstruction will be divided up into
+<i>two</i> parts — the <i>control</i> part, which controls
+the operation of the datapath (or data unit), and the
+<i>address</i> part, which is the address of the next
+microinstruction to be executed <i>under certain conditions</i>.</p><blockquote class="figure"><div class="center"><hr width="80%" size="2"></div>
+<img src="./Microprogramming_files/0708.cs-323001.png">
+<div class="caption"><table cellspacing="6" cellpadding="0"><tbody><tr><td valign="top" align="left">Figure 1.1: A microprogrammed controller</td></tr>
+</tbody></table></div>
+<a name="fig:mproc1"></a>
+<div class="center"><hr width="80%" size="2"></div></blockquote><p>Consider figure <a href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323003.html#fig:mproc1">1.1</a>. After executing a particular
+microinstruction, the next microinstruction to be executed is
+<i>either</i> that specified by the address field of the current
+microinstruction, or the <i>next sequential</i> microinstruction (as
+in a conventional machine language) depending on the value of the
+conditional inputs. In addition, when one sequence of
+microinstructions has finished, the next is determined by the contents
+of the machine instruction register.</p><p>In fact, the situation is usually slightly more complex than this —
+there is usually a <i>sequencing</i> part to the microinstruction in
+addition to the control and address parts. The sequencing information
+is used, for example, to decide which of several conditional inputs is
+to be used to control branching. Usually we require unconditional
+branching as well, and also many microinstructions do not require
+branching at all.</p><p>Consequently the situation is slightly more complex than that shown in
+figure <a href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323003.html#fig:mproc1">1.1</a>.</p><p>Further refinements are possible — for example, some systems allow
+<i>two</i> addresses in the microinstruction, and use conditions to
+select between them, rather than selecting between one address and the
+next sequential address. Such systems are called <i>two-address
+microinstruction controllers</i>, or <i>sequencers</i>. Conversely,
+the type shown in figure <a href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323003.html#fig:mproc1">1.1</a> is a
+<i>single-address controller</i>. It is also common to find
+<i>subroutines</i>, usually somewhat rudimentary.</p><h2 class="section"><a name="toc7"></a><a name="htoc9">1.3</a>&nbsp;&nbsp;Morphology</h2><p>The format of the control part of a microinstruction allows us to
+classify microinstructions into <i>horizontal</i> and
+<i>vertical</i>. The datapath is controlled by a number of control
+signals, supplied by the controller. The question is, how do we map
+the required control signals onto the control word?</p><blockquote class="figure"><div class="center"><hr width="80%" size="2"></div>
+<img src="./Microprogramming_files/0708.cs-323002.png">
+<div class="caption"><table cellspacing="6" cellpadding="0"><tbody><tr><td valign="top" align="left">Figure 1.2: Horizontal &amp; vertical microcontrollers</td></tr>
+</tbody></table></div>
+<a name="fig:mprogmorph"></a>
+<div class="center"><hr width="80%" size="2"></div></blockquote><h3 class="subsection"><a name="htoc10">1.3.1</a>&nbsp;&nbsp;Fully horizontal microcode</h3><p>The simplest solution would be to assign each control signal a single
+bit in the control word — see figure <a href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323003.html#fig:mprogmorph">1.2</a>(a).</p><p>This is <i>fully-horizontal microcode</i>. It has the obvious
+disadvantage that not all control signals in the datapath will ever be
+activated simultaneously, thus requiring much wider microcode words
+than is necessary. Microcode words are commonly wide anyway — of
+the order of 100 bits or more. If a datapath has many control
+signals, it could be very much wider with horizontal microcode.</p><p>However, it does have the advantages that many datapath signals can be
+activated simultaneously, thus maximising potential parallelism; and
+there is no extra hardware between controller and datapath, which
+could slow down the processor. Therefore, horizontal microcode is
+potentially fast.</p><h3 class="subsection"><a name="htoc11">1.3.2</a>&nbsp;&nbsp;Fully vertical microcode</h3><p>In <i>fully-vertical microcode</i>, the control signals are
+fully-encoded in the control word — that is, if for example a
+datapath had 16 control signals, these would be encoded as four bits:
+see figure <a href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323003.html#fig:mprogmorph">1.2</a>(b).</p><p>This saves on the microcode memory needed, but removes any possibility
+for parallelism and adds a decoder between the controller and the
+datapath.</p><p>As well as delaying the signals, the decoder will consume some of the
+space/resources saved by reducing the size of the microcode memory.
+This is an example of a time-space tradeoff.</p><h3 class="subsection"><a name="htoc12">1.3.3</a>&nbsp;&nbsp;Morphology in practice</h3><p>In practice, neither extreme is seen — some degree of encoding of
+the datapath signals is always done, and some parallel operation is
+allowed.</p><p>In practice, not all possible parallel activities are useful; <i>e.g.</i>&nbsp;there is no point in writing more than one register to the same bus
+(<i>i.e.</i>&nbsp;performing more than one register read) at the same time.</p><p>Therefore, it makes sense to work out what useful combinations of
+parallel actions exist and allow these.</p><p>How can we design a microinstruction format to control the data unit?
+Each register needs two control signals to indicate reading and
+writing from/to the bus.</p><blockquote class="figure"><div class="center"><hr width="80%" size="2"></div>
+<img src="./Microprogramming_files/0708.cs-323003.png">
+<div class="caption"><table cellspacing="6" cellpadding="0"><tbody><tr><td valign="top" align="left">Figure 1.3: A simple bus-based data unit</td></tr>
+</tbody></table></div>
+<a name="fig:examplebus"></a>
+<div class="center"><hr width="80%" size="2"></div></blockquote><p>For example consider a simple, <i>single bus</i> implementation
+of a data unit in figure <a href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323003.html#fig:examplebus">1.3</a>.</p><p>There are a total of 16 registers, but only one can write to the bus
+at any one time — hence it makes sense to encode all the register
+read bits as a 4-bit word.</p><p>However, all the registers can read from the bus (register write)
+simultaneously — so we could argue that these should be unencoded
+— 16 bits.</p><p>However, this is a bit over the top, as we would hardly want to write
+the same value into all the registers at once.</p><p>We would look at the architecture, and see if the instruction set
+makes it reasonable to allow multiple register writes. Given the
+single bus implementation, in most cases we are unlikely to gain
+anything by allowing this. Hence in this case it makes sense to
+encode the read bits as well. This would allow us to simultaneously
+read and write to the bus, copying the contents of one register in a
+single step.</p><h2 class="section"><a name="toc8"></a><a name="htoc13">1.4</a>&nbsp;&nbsp;The Rise and Fall of Microprogramming</h2><p>
+<a name="sec:risefall"></a></p><p>Microprogramming has been a massively successful solution to the
+problem of building controllers systematically, and was used (with
+minor modifications) in the vast majority of processors from the mid
+1960s to the late 1980s.</p><p>However, it has now been more-or-less completely superseded for
+advanced processors. The reasons for the initial success and then the
+decline are partly technological and partly concerned with attitudes
+to software and hardware. While initially intended as a more
+managable means of building controllers, a number of other
+`advantages' become clear.</p><ul class="itemize"><li class="li-itemize"><b>Easy to change</b> — microprograms could be relatively
+easily changed, since they were in memory. In many machines,
+microcode was explicitly loaded from a disk<sup><a name="text4" href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323003.html#note4">3</a></sup>. This meant that bugs could
+easily be fixed, and machines could potentially be given
+alternative instruction sets. Even in microprocessors,
+bug-fixing a ROM was a lot easier and somewhat cheaper than
+bug-fixing gate logic.</li><li class="li-itemize"><b>Easy to add functionality</b> — effectively, designers
+found they could use the flexibility and ease of
+construction/modification to increase the sophistication and
+`power' of instruction sets. They could make more `powerful'
+instructions by simply creating longer sequences of
+microinstructions.</li></ul><p>All through the 60s and 70s instruction sets became more and more
+sophisticated, culminating arguably in DEC's VAX series. Designers
+thought that by providing a rich, sophisticated instruction set they
+were making life easier for software engineers (particularly compiler
+writers). During the late 60s the <i>software crisis</i> — the
+failure of software projects to deliver — was a major issue, and the
+reasons behind it were not initially well understood. (Software
+projects still often do not deliver, but at least the community knows
+why even if those directly involved do not.) One thing that was clear
+however was that it was not possible to keep on writing low-level code
+and meet demand — widespread use of high-level languages was
+necessary and (many) compilers were not all that good. Designers of
+instruction sets thought they were being helpful by trying to bridge
+the so-called <i>semantic gap</i> between low- and high-level
+languages. They did this by trying to provide relatively `high-level'
+instruction sets.</p><p>However, starting in the early 80s, doubts crept in:</p><ul class="itemize"><li class="li-itemize"><b>Constructs not quite right</b> — it proved impossible
+in general, when looking at high-level languages as a whole,
+to provide high-level instructions suitable for all of them.
+So, often, the high-level instructions would not be useful, or
+would need extra work to make them usable.</li><li class="li-itemize"><b>Too complex most of the time</b> — often when
+instructions were sufficiently general they would be very
+complex to use: too complex for most cases.</li><li class="li-itemize"><b>Performance</b> — this leads on from the previous
+point. The high-level instructions were often slow. In lots
+of cases, compiler writers found that short sequences of
+simpler instructions were faster, so they used them instead.</li><li class="li-itemize"><b>Wasted resources</b> — when you have a situation where
+you have a range of high-level instructions that are not being
+used (much), then you are wasting resources. A lot of
+hardware is sitting idle, which could instead be devoted to
+making the simpler instructions faster.</li><li class="li-itemize"><b>Domination of control</b> — an increasing proportion of
+hardware was going to implement control at the expense of
+processing data. Approximately 70% of the chip area of a
+late-70s microprocessor like the Motorola 68000 series was
+control logic.</li></ul><p>There were always people with doubts about the appropriateness of
+high-level instruction sets, but by the early 80s the influence of
+those who thought complex instruction sets were bad was growing.
+Their general view was that high-level instruction sets were providing
+<i>solutions</i> when they should have been providing <i>tools</i>
+or <i>primitives</i>. That is, they were saying to compiler
+writers: <i>“You have this problem to do with generating code,
+and we've solved it for you with this instruction.”</i> This led to the
+problems listed above. Instead of solutions, the doubters said, they
+should have been concentrating on basic building-blocks (tools) that
+compiler writes could use to build their <i>own</i> solutions, more
+closely matched to their specific problems.</p><p>A review of the actual behaviour of programs, the needs of compiler
+writers, and improvements in compiler technology all helped to boost
+the <i>RISC movement</i> (chapter <a href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323004.html#chap:risc_machines">2</a>). This
+was further promoted by the growing use of <i>pipelining</i>
+(chapter <a href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323006.html#chap:simple_pipelining">4</a>) and <i>superscalar
+implementations</i> (chapter <a href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323009.html#chap:superscalar_processors">7</a>) which,
+as we shall see, are much better suited to conceptually simpler
+instruction sets — where all the instructions are the same length
+and take the same amount of time to execute. Furthermore, the very
+nature of modern pipelined processors is that they consist of
+multiple, parallel stages, each with its own relatively-independent
+and simple control logic — which are not well-suited to
+microprogramming.</p><p>We will look at the issues surrounding the rise of RISCs in the next
+chapter.
+
+</p><hr class="footnoterule"><dl class="thefootnotes"><dt class="dt-thefootnotes">
+<a name="note2" href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323003.html#text2">1</a></dt><dd class="dd-thefootnotes">A highly significant Computer
+Scientist who was responsible for EDSAC, which tends to compete with
+the Manchester Mark 1 for the title of first `real' computer.
+</dd><dt class="dt-thefootnotes"><a name="note3" href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323003.html#text3">2</a></dt><dd class="dd-thefootnotes">Well, relatively – we would not
+think so today
+</dd><dt class="dt-thefootnotes"><a name="note4" href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323003.html#text4">3</a></dt><dd class="dd-thefootnotes">The first
+and intended use of the floppy disk — initially 8 inch —
+was for loading microcode.
+</dd></dl>
+<hr>
+<a href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323002.html"><img src="./Microprogramming_files/previous_motif.gif" alt="Previous"></a>
+<a href="http://euler.mat.uson.mx/~havillam/ca/CS323/index.html"><img src="./Microprogramming_files/contents_motif.gif" alt="Up"></a>
+<a href="http://euler.mat.uson.mx/~havillam/ca/CS323/0708.cs-323004.html"><img src="./Microprogramming_files/next_motif.gif" alt="Next"></a>
+
+
+<div id="feedly-mini" title="feedly Mini tookit"></div></body></html>
