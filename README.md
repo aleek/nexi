@@ -1,28 +1,19 @@
-# Description
-Nexi is an educational project to learn Verilog. When it's finished, it will allow you to:
-- use GUI to prototype System On Chip
-- easly add new modules to the system, in order to integrate it with your SoC
+# What is Nexi System On Chip?
+Nexi is an research project, which aim to provide full coverage of modules, need to create modern architecture System On Chip.
+It is based on M68000 microprocessor in Wishbone shared bus architecture. The port of Linux kernel will be available.
+With Nexi, one can design it's own System On Chip using only mouse in graphial designer application, leaving the actual work to the application.
 
-# Designer
+# Features
+- m68k based microprocessor - M68000, M68010, M68020
+- Memory Management Unit
+- dCache and iCache
+- ability to work in multiprocessor system
+- 10Mbps Ethernet MAC
+- i2c, spi
+- generic DMA engine
+- GPU with HDMI output
+- uart
+- graphical designer of the System
 
-# Modules
-## Wishbone modules
-- 10_100_mac - MII/RMII ethernet mac module
-- ao68000 - m68000 processor
-- cache - wishbone enabled processor cache
-- dmaengine - dma engine. Only block operation. No scatter-gatter
-- gptimer - general purpose timer
-- gpu -
-- i2c - standard i2c module
-- mmu - 
-- pic - openpic based programmable interrupt controller
-- rtc_ds1337- 
-- uart_minimal - minimalistic uart implementation. No FIFO, no extra signals, no extra registers. Only simple rx/tx
-- wb_interconnect - wishbone interconnect for creating shared bus architectures
-
-## Non-wishbone modules
-- cam - content addresable memory
-- hdmi
-- syscon - 
-
+Most of them are currently not finished or even started.
 
