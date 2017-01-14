@@ -241,6 +241,7 @@ always @(posedge CLK_I or negedge reset_n) begin
                         interrupt_trap_o <= VECTOR_ADDRESS_TRAP;
 
                         jmp_address_trap_o <= 1'b1;
+                        $display("ADDRESS TRAP");
                         current_state <= S_WAIT;
                     end
                     else begin
@@ -290,6 +291,7 @@ always @(posedge CLK_I or negedge reset_n) begin
                         interrupt_trap_o <= VECTOR_ADDRESS_TRAP;
 
                         jmp_address_trap_o <= 1'b1;
+                        $display("ADDRESS TRAP");
                         current_state <= S_WAIT;
                     end
                     else begin
@@ -460,6 +462,7 @@ always @(posedge CLK_I or negedge reset_n) begin
                     interrupt_trap_o <= VECTOR_ADDRESS_TRAP;
 
                     jmp_address_trap_o <= 1'b1;
+                    $display("ADDRESS TRAP");
                     current_state <= S_WAIT;
                 end
                 else begin
@@ -564,6 +567,7 @@ always @(posedge CLK_I or negedge reset_n) begin
                 else if(ERR_I == 1'b1) begin
                     CYC_O <= 1'b0;
                     STB_O <= 1'b0;
+                    $display("BUS TRAP");
 
                     fault_address_state_o <= { ADR_O, 2'b00 };
                     rw_state_o <= ~WE_O;
@@ -629,6 +633,7 @@ always @(posedge CLK_I or negedge reset_n) begin
                     interrupt_trap_o <= VECTOR_BUS_TRAP;
 
                     jmp_bus_trap_o <= 1'b1;
+                    $display("BUS TRAP");
                     current_state <= S_WAIT;
                 end
             end
@@ -666,6 +671,7 @@ always @(posedge CLK_I or negedge reset_n) begin
                     interrupt_trap_o <= VECTOR_BUS_TRAP;
 
                     jmp_bus_trap_o <= 1'b1;
+                    $display("BUS TRAP");
                     current_state <= S_WAIT;
                 end
             end
@@ -736,6 +742,7 @@ always @(posedge CLK_I or negedge reset_n) begin
                     interrupt_trap_o <= VECTOR_BUS_TRAP;
 
                     jmp_bus_trap_o <= 1'b1;
+                    $display("BUS TRAP");
                     current_state <= S_WAIT;
                 end
             end
@@ -766,6 +773,7 @@ always @(posedge CLK_I or negedge reset_n) begin
                     interrupt_trap_o <= VECTOR_BUS_TRAP;
 
                     jmp_bus_trap_o <= 1'b1;
+                    $display("BUS TRAP");
                     current_state <= S_WAIT;
                 end
 
@@ -834,6 +842,7 @@ always @(posedge CLK_I or negedge reset_n) begin
                     interrupt_trap_o <= VECTOR_BUS_TRAP;
 
                     jmp_bus_trap_o <= 1'b1;
+                    $display("BUS TRAP");
                     current_state <= S_WAIT;
                 end
 
@@ -863,6 +872,7 @@ always @(posedge CLK_I or negedge reset_n) begin
                     interrupt_trap_o <= VECTOR_BUS_TRAP;
 
                     jmp_bus_trap_o <= 1'b1;
+                    $display("BUS TRAP");
                     current_state <= S_WAIT;
                 end
 
