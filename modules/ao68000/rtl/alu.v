@@ -119,7 +119,17 @@ end
 
 // MULS/MULU: 16-bit operand1[15:0] signed/unsigned * operand2[15:0] signed/unsigned = 32-bit result signed/unsigned
 // Optimization by Frederic Requin
-wire [33:0] mult_result;
+wire signed [33:0] mult_result;
+
+/* for the sake of simulation,we can use verilog signed multiplication. */
+// sign extension
+wire signed [16:0] op1_u2;
+wire signed [16:0] op2_u2;
+
+assign op1_u2 = {operand1[15] & mult_div_sign, operand1[15:0] };
+assign op2_u2 = {operand2[15] & mult_div_sign, operand2[15:0] };
+// @todo make this mult defined only in simulation
+assign mult_result = op1_u2 * op2_u2;
 
 //lpm_mult muls(
 //    .clock  (clock),
