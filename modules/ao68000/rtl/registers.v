@@ -133,6 +133,15 @@ module registers(
     output reg [17:0] decoder_alu_reg
 );
 
+reg [31:0] last_pc = 32'h00000000;
+always @(posedge clock) begin
+	if( pc != last_pc ) begin
+		last_pc <= pc;
+		$fwrite(32'h80000002, "%x\n", pc);
+	end
+end
+
+
 reg [31:0] pc_valid;
 
 wire [31:0] pc_next =
@@ -285,7 +294,7 @@ always @(posedge clock or negedge reset_n) begin
     else if(address_control == `ADDRESS_FROM_AN_OUTPUT)         address <= An_output;
     else if(address_control == `ADDRESS_FROM_BASE_INDEX_OFFSET) address <= address + index + offset;
     else if(address_control == `ADDRESS_FROM_IMM_16)            address <= { {16{prefetch_ir[79]}}, prefetch_ir[79:64] };
-    else if(address_control == `ADDRESS_FROM_IMM_32)            address <= prefetch_ir[79:48];
+    else if(address_control == `ADDRESS_FROM_IMM_32)            address <= prefetch_ir[79:48]; // @TODO are we sure, that prefetch_ir[78:48] always has valid IR?
     else if(address_control == `ADDRESS_FROM_PC_INDEX_OFFSET)   address <= pc_valid + index + offset;
     else if(address_control == `ADDRESS_FROM_TRAP)              address <= {22'b0, trap[7:0], 2'b0};
 end

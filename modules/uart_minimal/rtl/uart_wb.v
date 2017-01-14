@@ -89,7 +89,10 @@ begin
 		if(cyc_i & stb_i & ~ack_o) begin
 			if(we_i) begin
 				case (sel_i)
-					`THR: begin thr <= data_i[23:16]; data_to_transmit <= 1'b1; end
+					`THR: begin
+						thr <= data_i[23:16];
+						data_to_transmit <= 1'b1;
+					end
 					`IER: ier <= data_i[15:8];
 				endcase
 			end
@@ -129,6 +132,8 @@ begin
 		case(txstate)
 			`S_TX_IDLE: begin
 				if(data_to_transmit) begin
+					$write( "%c", thr);
+					$fflush();
 					command_send <= 1'b1;
 					txstate <= `S_WAIT_TX1;
 				end

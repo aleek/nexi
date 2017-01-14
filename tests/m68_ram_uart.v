@@ -91,10 +91,10 @@ module tb_m68k_ram_uart;
 	);
 	assign ao_addr[1:0] = 2'b00;
 
-	wb_ram #(32,20,4) wb_ram_m(
+	wb_ram #(32,24,4) wb_ram_m(
 		.clk(clk),
 
-		.adr_i(ram_addr[19:0]),
+		.adr_i(ram_addr[23:0]),
 		.dat_i(ram_data_in),
 		.dat_o(ram_data_out),
 		.we_i(ram_we),
@@ -163,12 +163,13 @@ module tb_m68k_ram_uart;
 
 	initial begin
 		rst_n = 1'b0;
-		$dumpfile("m68k_ram_uart.vcd");
-		$dumpvars;
-		$readmemh( "./sw/uart_test.vmem", wb_ram_m.mem);
+		//$dumpfile("m68k_linux.vcd");
+		//$dumpvars;
+		$readmemh( "/home/aleek/src/m68k/nexi/m68klinux.vmem", wb_ram_m.mem);
+		//$readmemh( "/home/aleek/src/m68k/nexi/sw/uart_test.vmem", wb_ram_m.mem);
 		#80;
 		rst_n = 1'b1;
-		#3000;
+		#30000000;
 		$finish;
 	end
 
@@ -176,6 +177,5 @@ module tb_m68k_ram_uart;
 		clk = 1'b1;
 		forever #5 clk = ~clk;
 	end
-
 
 endmodule
