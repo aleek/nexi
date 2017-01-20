@@ -33,7 +33,6 @@ class Mmc(object):
     def compile(self):
         label = ''
         external = False
-        instr_oneliner = None
 
         self.parse_input_file()
         token_iter = iter(self.tokens)
@@ -47,7 +46,7 @@ class Mmc(object):
                 printable_token = "NEWL"
             else:
                 printable_token = token
-            print "state: " + str(state[0]) + " next token: " + printable_token
+            print "state: " + str(state[0]) + " current token: " + printable_token
             if state[0] == FSMState.RECOGNIZE:
                 if token == "#ifdef":
                     state.insert(0, FSMState.IFDEF)
@@ -60,7 +59,7 @@ class Mmc(object):
                     state.insert(0, FSMState.EXTERNAL)
                 elif re.match('^[a-zA-Z0-9_-]+:', token) is not None:
                     label = token[0:-1]
-                    #state.insert(0, FSMState.LABEL)
+                    state.insert(0, FSMState.LABEL)
                 elif token == "\n":
                     continue
                 else:
@@ -92,35 +91,23 @@ class Mmc(object):
                     raise Exception( "Syntax error: label " + token)
 
             elif state[0] == FSMState.INSTR:
-                if token == "\n":
-                    instr_oneliner = False
-                else:
-                    instr_oneliner = True
-                state.pop(0)
-                state.insert(0, FSMState.INSTR_CONTENT)
-
-            elif state[0] == FSMState.INSTR_CONTENT:
                 if token.startswith('#') or token.startswith("//"):
                     state.insert(0, FSMState.COMMENT)
-                elif token == "\n" and instr_oneliner == True:
-                    instr_oneliner = None
-                    label = ''
-                    external = False
+                elif token == "\n":
+                    continue
+                elif token == "endinstr":
                     state.pop(0)
-                elif token == "endinstr" and instr_oneliner == False:
-                    state.pop(0)
-                elif re.match("[A-Z0-9_]+ *\( *[A-Z0-9_]+ *\)", token) is not None:
-                    code = re.findall("[A-Z0-9_]+", token)
+                elif re.match("[A-Z0-9_]+ *\( *[A-Za-z0-9_]+ *\)", token) is not None:
+                    code = re.findall("[A-Za-z0-9_]+", token)
+                    print code
                     if code[0] not in m_defs.m68k_defs:
-                        print "Unrecognized token: " + code[0]
+                        print "Unrecognized token 1: " + code[0]
                         exit(1)
                     if code[1] not in m_defs.m68k_defs[code[0]]:
-                        print "Unrecognized token: " + code[0]
+                        print "Unrecognized token 2: " + code[1]
                         exit(1)
                     print "Got tokens: " + code[0] + " " + code[1]
-                    push_token( code[0], code[1], label, external) 
-                    
-
+                    self.push_token( code[0], code[1], label, external) 
                 else:
                     print "Unrecognized token: " + token
                     exit(1)
@@ -129,7 +116,8 @@ class Mmc(object):
                 if token == "\n":
                     state.pop(0)
                     
-    def push_token(function, param, label, external):
+    def push_token(self, function, param, label, external):
+        pass
         
     def parse_input_file(self):
         content = self.inputfile.readlines()

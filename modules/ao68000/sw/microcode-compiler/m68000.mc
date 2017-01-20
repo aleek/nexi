@@ -1,9 +1,13 @@
 # Microcode source code for M68000 implementation of ao68000.
 
 reset:
-instr GROUP_0_FLAG(SET)
+instr
+	GROUP_0_FLAG(SET)
+endinstr
 
-instr PROCEDURE(wait_prefetch_valid) # wait for instruction prefetch
+instr
+	PROCEDURE(wait_prefetch_valid) # wait for instruction prefetch
+endinstr
 
 # move SSP and PC from prefetch
 instr
@@ -16,26 +20,26 @@ instr
 endinstr
 
 // clear internal flags
-MICROPC_ADDRESS_BUS_TRAP:
+ADDRESS_BUS_TRAP:
 external instr
 	TRAP(FROM_INTERRUPT)
 	OP2(MOVE_ADDRESS_BUS_INFO)
 	RMW_FLAG(CLEAR)
-	INSTRUCTION_FLAG_SET
-	DO_READ_FLAG_CLEAR
-	DO_WRITE_FLAG_CLEAR
-	DO_INTERRUPT_FLAG_CLEAR
+	INSTRUCTION_FLAG(SET)
+	DO_READ_FLAG(CLEAR)
+	DO_WRITE_FLAG(CLEAR)
+	DO_INTERRUPT_FLAG(CLEAR)
 endinstr
 
 instr
 	// check if group_0_flag already active
-	BRANCH_group_0_flag
+	BRANCH(group_0_flag)
 	goto address_bus_trap_group_0_flag_cleared
 endinstr
 
 instr
 	//if group_0_flag active: block processor
-	DO_BLOCKED_FLAG_SET
+	DO_BLOCKED_FLAG(SET)
 	PROCEDURE(wait_finished)
 endinstr
 

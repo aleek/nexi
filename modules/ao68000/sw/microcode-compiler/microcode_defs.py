@@ -249,7 +249,7 @@ m68k_defs = {
     'FROM_RESULT'            : 1,    # load data write register from result register
 },
 
-'AD_ADDRESS' : {
+'AN_ADDRESS' : {
     'IDLE'                   : 0,    # load from ea_reg, user or supervisor
     'FROM_EXTENDED'          : 1,    # load from extended instruction word: ir1[14:12], user or supervisor
     'USP'                    : 2,    # load USP address
