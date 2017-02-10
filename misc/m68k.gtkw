@@ -1,34 +1,71 @@
 [*]
 [*] GTKWave Analyzer v3.3.68 (w)1999-2016 BSI
-[*] Fri Apr 29 12:34:16 2016
+[*] Mon Nov 28 19:35:41 2016
 [*]
-[dumpfile] "/home/aleek/src/m68k/nexi/output.vcd"
-[dumpfile_mtime] "Fri Apr 29 12:33:55 2016"
-[dumpfile_size] 183929
+[dumpfile] "/home/aleek/src/m68k/nexi/m68k_ram_uart.vcd"
+[dumpfile_mtime] "Mon Nov 28 19:33:54 2016"
+[dumpfile_size] 66884
 [savefile] "/home/aleek/src/m68k/nexi/m68k.gtkw"
-[timestart] 0
-[size] 1918 1043
+[timestart] 344900
+[size] 1920 940
 [pos] -1 -1
-*-19.458931 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
-[treeopen] tb_m68k_p2p_ram.
-[sst_width] 210
-[signals_width] 190
+*-15.000000 456100 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] tb_m68k_ram_uart.
+[treeopen] tb_m68k_ram_uart.ao68000_m.
+[treeopen] tb_m68k_ram_uart.uart1.
+[sst_width] 228
+[signals_width] 254
 [sst_expanded] 1
-[sst_vpaned_height] 320
+[sst_vpaned_height] 261
 @28
-tb_m68k_p2p_ram.rst_n
-tb_m68k_p2p_ram.clk
-tb_m68k_p2p_ram.cyc
-tb_m68k_p2p_ram.stb
-tb_m68k_p2p_ram.we
-tb_m68k_p2p_ram.ack
+tb_m68k_ram_uart.clk
+tb_m68k_ram_uart.uart1.uart_clk.clk_tx
+tb_m68k_ram_uart.rst_n
 @22
-tb_m68k_p2p_ram.addr[31:0]
-@23
-tb_m68k_p2p_ram.sel[3:0]
+[color] 2
+tb_m68k_ram_uart.ao_addr[31:0]
+tb_m68k_ram_uart.ao_sel[3:0]
+tb_m68k_ram_uart.ao_data_in[31:0]
+tb_m68k_ram_uart.ao_data_out[31:0]
+@28
+tb_m68k_ram_uart.ao_stb
+@29
+[color] 6
+tb_m68k_ram_uart.ao_we
+@28
+tb_m68k_ram_uart.ao_cyc
+tb_m68k_ram_uart.ao_ack
+@200
+-
+@24
+tb_m68k_ram_uart.ao68000_m.micro_pc[8:0]
+@28
+[color] 1
+tb_m68k_ram_uart.ao68000_m.jmp_address_trap
+[color] 1
+tb_m68k_ram_uart.ao68000_m.jmp_bus_trap
+tb_m68k_ram_uart.uart_stb
+tb_m68k_ram_uart.uart_cyc
+tb_m68k_ram_uart.uart_ack
+tb_m68k_ram_uart.ao68000_m.size[2:0]
 @22
-tb_m68k_p2p_ram.data_in[31:0]
-tb_m68k_p2p_ram.data_out[31:0]
-tb_m68k_p2p_ram.ao68000_m.micro_pc[8:0]
+tb_m68k_ram_uart.ao68000_m.address[31:0]
+@200
+-
+@28
+[color] 2
+tb_m68k_ram_uart.uart_pin
+@200
+-
+@22
+tb_m68k_ram_uart.uart1.thr[7:0]
+@28
+tb_m68k_ram_uart.uart1.nexi_uart_tx_instance.rst_n
+@22
+tb_m68k_ram_uart.uart1.nexi_uart_rx_instance.data[7:0]
+@28
+tb_m68k_ram_uart.uart1.irq_o
+@22
+tb_m68k_ram_uart.uart1.isr[7:0]
 [pattern_trace] 1
 [pattern_trace] 0

@@ -31,7 +31,7 @@ module tb_m68k_p2p_ram;
 	wire [31:0] data_out;
 	wire [31:0] data_in;
 	wire [3:0] sel;
-	wire stb;
+	wire stb; //chip select
 	wire we;
 	wire ack;
 	wire err;
@@ -92,9 +92,9 @@ module tb_m68k_p2p_ram;
 
 	initial begin
 		rst_n = 1'b1;
-		$dumpfile("output.vcd");
+		$dumpfile("m68k_p2p_ram.vcd");
 		$dumpvars;
-		$readmemh( "./m68k_initial_ram.vmem", wb_ram_m.mem);
+		$readmemh( "./sw/uart_test.vmem", wb_ram_m.mem);
 		#10;
 		rst_n = 1'b0;
 		#3000;
