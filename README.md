@@ -1,3 +1,5 @@
+[![License (3-Clause BSD)](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg?style=flat)](http://opensource.org/licenses/BSD-3-Clause)
+
 # What is Nexi System On Chip?
 Nexi is an research project, which aim to provide full coverage of modules, need to create modern architecture System On Chip.
 It is based on M68000 microprocessor in Wishbone shared bus architecture. The port of Linux kernel will be available.
