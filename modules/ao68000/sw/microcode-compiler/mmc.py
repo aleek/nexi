@@ -13,6 +13,7 @@ class FSMState(Enum):
     COMMENT       = 3
     EXTERNAL      = 4
     LABEL         = 5
+    GOTO          = 6
 
 
 
@@ -97,6 +98,8 @@ class Mmc(object):
                     continue
                 elif token == "endinstr":
                     state.pop(0)
+                elif token == "goto":
+                    state.insert(0, FSMState.GOTO)
                 elif re.match("[A-Z0-9_]+ *\( *[A-Za-z0-9_]+ *\)", token) is not None:
                     code = re.findall("[A-Za-z0-9_]+", token)
                     print code
@@ -106,18 +109,22 @@ class Mmc(object):
                     if code[1] not in m_defs.m68k_defs[code[0]]:
                         print "Unrecognized token 2: " + code[1]
                         exit(1)
-                    print "Got tokens: " + code[0] + " " + code[1]
                     self.push_token( code[0], code[1], label, external) 
                 else:
                     print "Unrecognized token: " + token
                     exit(1)
+
+            elif state[0] == FSMState.GOTO:
+                state.pop(0)
+
+                
 
             elif state[0] == FSMState.COMMENT:
                 if token == "\n":
                     state.pop(0)
                     
     def push_token(self, function, param, label, external):
-        pass
+        print "Got tokens: " + function + " " + param
         
     def parse_input_file(self):
         content = self.inputfile.readlines()
