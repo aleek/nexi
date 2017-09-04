@@ -169,7 +169,7 @@ module tb_m68k_ram_uart;
 		//$readmemh( "/home/aleek/src/m68k/nexi/sw/uart_test.vmem", wb_ram_m.mem);
 		#80;
 		rst_n = 1'b1;
-		#60000000;
+		#100000000;
 		$finish;
 	end
 
