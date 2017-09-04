@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 import sys
 import bisect
 
@@ -10,8 +10,8 @@ def parse_system_map(f):
     global sym_keys
     for line in f:
         el = line.split()
-        if el[1] == "T" or el[1] == 't':
-            symbol_list.append( [ int(el[0], 16), el[2] ]);
+        #if el[1] == "T" or el[1] == 't':
+        symbol_list.append( [ int(el[0], 16), el[2] ]);
             #print symbol_list[len(symbol_list)-1]
 
     # the System.map file should be sorted, but we'll sort it anyway
