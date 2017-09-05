@@ -27,7 +27,13 @@
  * and passes the control to the main() function.
  */
  .global _start
-#include "except.S"
+
+.section .exception_table
+.asciz "TABLETABLETABLETABLETABLETABLE"
+
+.data
+.asciz "DATADATADATADATADATADATADATA"
+
 
 
 .text

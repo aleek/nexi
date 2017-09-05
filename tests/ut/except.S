@@ -1,4 +1,5 @@
-.section .exception_vector
+.section .exception_table
+.asciz "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
 #define CONFIG_RAMBASE 0x0
 #define CONFIG_RAMSIZE 0x10000
 _except_reset_ssp:
@@ -7,7 +8,6 @@ _except_reset_pc:
 	.long _start
 _except_bus_error:
 	.word exception_berr
-	/*
 _except_addr_error:
 	.word exception_aerr
 _except_ill_instr:
@@ -22,11 +22,10 @@ _except_privil_viol:
 	.word exception_pv
 _except_trace:
 	.word exception_trc
-	*/
+/*
 .data
 
 str_berr:  .asciz "exception: Bus error\n"
-/*
 str_aerr:  .asciz "exception: Address error\n"
 str_ill:   .asciz "exception: Illegal instruction\n"
 str_div:   .asciz "exception: Still cannot divide by zero\n"
@@ -50,13 +49,13 @@ str_avi5:  .asciz "exception: Level 5 autovector interrupt\n"
 str_avi6:  .asciz "exception: Level 6 autovector interrupt\n"
 str_avi7:  .asciz "exception: Level 7 autovector interrupt\n"
 str_trap:  .asciz "exception: TRAP\n"
-*/
+
 .text
 
 exception_berr:
 	lea str_berr,%a0
 	jmp finish_exception
-/*
+
 exception_aerr:
 	lea str_aerr,%a0
 	jmp finish_exception
@@ -149,7 +148,7 @@ exception_avi7:
 exception_trap:
 	lea str_trap,%a0
 	jmp finish_exception
-*/
+
 finish_exception:
 	bsr puts             // print string from (%a0)
 	//jmp finish_execution // jump to routine that finishes vvp simulation
@@ -157,3 +156,4 @@ finish_exception:
 	jmp _inf_loop
 
 #include "puts.S"
+*/
