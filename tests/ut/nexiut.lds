@@ -3,19 +3,19 @@ OUTPUT_FORMAT(binary)
 ENTRY(_start)
 
 MEMORY {
-	ROM : ORIGIN = 0x0, LENGTH = 0x400
-	RAM : ORIGIN = 0x400, LENGTH = 0x100000 /*  (0x100000 - 0x400) */
+	ROM (rwx): ORIGIN = 0x0, LENGTH = 0x1000
+	RAM (rwx): ORIGIN = 0x1000, LENGTH = 0x100000 /*  (0x100000 - 0x400) */
 }
 
+ENTRY(_start)
 
 SECTIONS {
-	.exception_table . :
+	.text :
      {
        . = ALIGN(4);
        KEEP(*(.exception_table)) /* Startup code */
-       . = ALIGN(4);
+       . = ALIGN(0x400);
+	   *(.text*)
      } > ROM
-	 . = 0x400;
-	.text . : { *(.text) } > RAM
 	.data : { *(.data) } > RAM
 }

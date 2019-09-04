@@ -27,15 +27,41 @@
  * and passes the control to the main() function.
  */
  .global _start
+#define CONFIG_RAMBASE 0x0
+#define CONFIG_RAMSIZE 0x10000
 
 .section .exception_table
-.asciz "TABLETABLETABLETABLETABLETABLE"
+_except_reset_ssp:
+	.long (CONFIG_RAMBASE + CONFIG_RAMSIZE)
+_except_reset_pc:
+	.long _start
+
+	.long 0
+	.long 0
+	.long 0
+	.long 0
+	.long 0
+	.long 0
+	.long 0
+	.long 0
+	.long 0
+	.long 0
+	.long 0
+	.long 0
+	.long 0
+	.long 0
+	.long 0
+	.long 0
+	.long 0
+	.long 0
 
 .data
 .asciz "DATADATADATADATADATADATADATA"
 
 
 
+/* times 0x400-($-$$) .long 0 */
+.org 0x400
 .text
 /*
  * GNU AS syntax is similar to every arch.
@@ -49,4 +75,12 @@
  * http://mrjester.hapisan.com/04_MC68/Index.html
  */
 _start:
+	move.l %a0,%sp@-
+	move.l %d0,%sp@-
+	move.b %a0@+,%d0              // move the char to d0
+	cmpi.b #0x00,%d0               // check if end of string
+	move.b %d0,%a1@
+	move.l %sp@+,%d0
+	move.l %sp@+,%a0
+	rts
 	jmp _start

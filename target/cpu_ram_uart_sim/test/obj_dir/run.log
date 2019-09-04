@@ -1,0 +1,90 @@
+RUNNINGBLABLA<5>Linux version 2.6.33.1-gdb7335d-dirty (aleek@vm998) (gcc version 4.4.7 (crosstool-NG crosstool-ng-1.22.0-234-g531eab4) ) #95 Thu May 4 13:28:17 CEST 2017
+<6>
+<6>AO68000 support Aleksander Osman <alfik@poczta.fm>
+<6>
+<6>
+<6>uClinux/AO68000
+<6>Flat model support (C) 1998,1999 Kenneth Albanowski, D. Jeff Dionne
+<7>KERNEL -> TEXT=0x000400-0x07f918 DATA=0x07f920-0x085000 BSS=0x08b000-0x091f7c
+<7>MEMORY -> ROMFS=0x091f7c-0x091f7c MEM=0x091f7c-0x1000000
+<7> setup_arch:288
+<4>mem_start 91f7c end1000000
+<4>ram_start 91f7c end1000000
+<6>bootmem::init_bootmem_core nid=0 start=0 map=91 end=1000 mapsize=200
+<4>setup_arch:301
+<6>bootmem::mark_bootmem_node nid=0 start=92 end=1000 reserve=0 flags=0
+<6>bootmem::__free nid=0 start=92 end=1000
+<4>__free:281 value: 91000
+<4>setup_arch:303
+<6>bootmem::mark_bootmem_node nid=0 start=91 end=93 reserve=1 flags=0
+<6>bootmem::__reserve nid=0 start=91 end=93 flags=0
+<6>bootmem::__reserve silent double reserve of PFN 91
+<4>setup_arch:305
+<4>setup_arch:314
+<7>start_mem is 0x2000
+<7>virtual_end is 0x0
+<6>bootmem::alloc_bootmem_core nid=0 size=1000 [1 pages] align=1000 goal=0 limit=0
+<6>bootmem::__reserve nid=0 start=9f end=a0 flags=1
+<6>bootmem::alloc_bootmem_core nid=0 size=1000 [1 pages] align=1000 goal=0 limit=0
+<6>bootmem::__reserve nid=0 start=a0 end=a1 flags=1
+<6>bootmem::alloc_bootmem_core nid=0 size=1000 [1 pages] align=1000 goal=0 limit=0
+<6>bootmem::__reserve nid=0 start=a1 end=a2 flags=1
+<7>before free_area_init
+<7>free_area_init -> start_mem is 0x2000
+<7>virtual_end is 0x0
+<7>On node 0 totalpages: 0
+<7>free_area_init_node: node 0, pgdat 00083180, node_mem_map 00000000
+<6>bootmem::alloc_bootmem_core nid=0 size=1 [1 pages] align=10 goal=0 limit=0
+<6>bootmem::__reserve nid=0 start=a2 end=a3 flags=1
+<6>bootmem::alloc_bootmem_core nid=0 size=1 [1 pages] align=10 goal=0 limit=0
+<6>bootmem::__reserve nid=0 start=a3 end=a3 flags=1
+<4>Built 1 zonelists in Zone order, mobility grouping off.  Total pages: 0
+<5>Kernel command line: 
+<4>Bucketsize: 0x4 numentries 0x0 nr_kernel_pages 0x0 nr_all_pages 0x0
+<4>alloc_large_system_hash:4859
+<4>numentries: 10 max 0x1000
+<4>numentries: 10 log2qty a max 0x1000
+<6>bootmem::alloc_bootmem_core nid=0 size=1000 [1 pages] align=10 goal=0 limit=0
+<6>bootmem::__reserve nid=0 start=a3 end=a4 flags=1
+<6>PID hash table entries: 1024 (order: -12, 4096 bytes)
+<4>Bucketsize: 0x4 numentries 0x0 nr_kernel_pages 0x0 nr_all_pages 0x0
+<4>alloc_large_system_hash:4859
+<4>numentries: 400 max 0x0
+<4>alloc_large_system_hash:4890
+<4>numentries: 0 log2qty a max 0x0
+<6>bootmem::alloc_bootmem_core nid=0 size=1000 [1 pages] align=10 goal=0 limit=0
+<6>bootmem::__reserve nid=0 start=a4 end=a5 flags=1
+<6>Dentry cache hash table entries: 1024 (order: -12, 4096 bytes)
+<4>inode_init_early:1547
+<4>Bucketsize: 0x4 numentries 0x0 nr_kernel_pages 0x0 nr_all_pages 0x0
+<4>alloc_large_system_hash:4859
+<4>numentries: 400 max 0x0
+<4>alloc_large_system_hash:4890
+<4>numentries: 0 log2qty a max 0x0
+<6>bootmem::alloc_bootmem_core nid=0 size=1000 [1 pages] align=10 goal=0 limit=0
+<6>bootmem::__reserve nid=0 start=a5 end=a6 flags=1
+<6>Inode-cache hash table entries: 1024 (order: -12, 4096 bytes)
+<6>bootmem::free_all_bootmem_core nid=0 start=0 end=1000 aligned=1
+<1>BUG: Bad page state in process swapper  pfn:00093
+<1>page:00001260 flags:00102b2d count:0 mapcount:5Q0461 mapping:2f0d2f08 index:48790007
+<0>Stack from 00084ef4:
+<0>Call Trace:
+<4>
+<4>Disabling lock debugging due to kernel taint
+<1>BUG: Bad page state in process swapper  pfn:00094
+<1>page:00001280 flags:2ebc0007 count:0 mapcount:9477"€P¶Ω mapping:(null) index:6000fe30
+<0>Stack from 00084ef4:
+<0>Call Trace:
+<4>
+<1>BUG: Bad page state in process swapper  pfn:00095
+<1>page:000012a0 flags:20102268 count:0 mapcount:26115 mapping:(null) index:2f082f09
+<0>Stack from 00084ef4:
+<0>Call Trace:
+<4>
+<1>BUG: Bad page state in process swapper  pfn:00096
+<1>page:000012c0 flags:4e5e4a75 count:0 mapcount:13154iÎŸÅb mapping:2f2e0008 index:2f084878
+<0>Stack from 00084ef4:
+<0>Call Trace:
+<4>
+<1>BUG: Bad page state in process swapper  pfn:00097
+<1>page:
